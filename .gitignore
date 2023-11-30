@@ -1,0 +1,51 @@
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+.eggsparts
+bin
+var
+sdist
+develop-ags
+.installed.cfg
+lib
+lib64
+
+# Python specific
+*.pyc
+/__pycache__
+/venv
+
+# pytest
+.pytest_cache
+.cache
+
+# Development
+.settings
+.project
+.pydevproject
+
+# Visual Studio Code
+.vscode
+
+# Testing
+.tox
+.coverage
+
+# Build docs
+docs/build
+
+# Windows Explorer
+desktop.ini
+
+# Patches
+*.patch
+
+# mypy
+/.mypy_cache/*
+
+# other
+sandbox
+example.py
