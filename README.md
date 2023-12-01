@@ -1,6 +1,6 @@
-# HA SMA EV Charger integration
+# SMA EV Charger integration for Home Assistant
 
-Home Assistant(https://www.home-assistant.io) Integration Component
+Home Assistant (https://www.home-assistant.io) Integration Component
 
 This custom component integrates the SMA EV Charger into Home Assistant.
 
