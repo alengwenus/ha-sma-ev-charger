@@ -72,7 +72,7 @@
         "state": {
           "active_mode": "Ladevorgang aktiv",
           "not_connected": "nicht verbunden",
-          "sleep_mode": "Ladevorgang inaktiv"
+          "sleep_mode": "schlafend"
         }
       },
       "charging_station_meter_reading": {

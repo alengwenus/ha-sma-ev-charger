@@ -20,7 +20,7 @@ Click on the following button to have the SMA EV Charger integration added autom
 
 #### Manually in HACS
 
-If _My Home Assistant_ does not work for you, you might consider installing the SMA EV Charger the integration manually using HACS. For this you need to add a custom repository following the instructions [here](https://hacs.xyz/docs/faq/custom_repositories/).
+If _My Home Assistant_ does not work for you, you might consider installing the SMA EV Charger integration manually using HACS. For this you need to add a custom repository following the instructions [here](https://hacs.xyz/docs/faq/custom_repositories/).
 
 When asked, use the custom repository link `https://github.com/alengwenus/ha-sma-ev-charger`
 
