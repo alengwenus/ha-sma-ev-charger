@@ -75,6 +75,24 @@
           "sleep_mode": "schlafend"
         }
       },
+      "connected_vehicle_status": {
+        "name": "Status des verbundenen Fahrzeugs",
+        "state": {
+          "ok": "Ok",
+          "warning": "Warnung",
+          "alarm": "Alarm",
+          "off": "Aus"
+        }
+      },
+      "charging_station_status": {
+        "name": "Status der Ladestation",
+        "state": {
+          "ok": "Ok",
+          "warning": "Warnung",
+          "alarm": "Alarm",
+          "off": "Aus"
+        }
+      },
       "charging_station_meter_reading": {
         "name": "Zählerstand Ladestation"
       },

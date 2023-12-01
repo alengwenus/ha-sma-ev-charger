@@ -75,6 +75,24 @@
           "sleep_mode": "In sleep mode"
         }
       },
+      "connected_vehicle_status": {
+        "name": "Status of connected vehicle",
+        "state": {
+          "ok": "Ok",
+          "warning": "Warning",
+          "alarm": "Alarm",
+          "off": "Off"
+        }
+      },
+      "charging_station_status": {
+        "name": "Status of charging station",
+        "state": {
+          "ok": "Ok",
+          "warning": "Warning",
+          "alarm": "Alarm",
+          "off": "Off"
+        }
+      },
       "charging_station_meter_reading": {
         "name": "Charging station meter reading"
       },

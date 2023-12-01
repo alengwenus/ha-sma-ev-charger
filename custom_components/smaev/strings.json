@@ -109,6 +109,24 @@
           "active_mode": "In active mode"
         }
       },
+      "connected_vehicle_status": {
+        "name": "Status of connected vehicle",
+        "state": {
+          "ok": "Ok",
+          "warning": "Warning",
+          "alarm": "Alarm",
+          "off": "Off"
+        }
+      },
+      "charging_station_status": {
+        "name": "Status of charging station",
+        "state": {
+          "ok": "Ok",
+          "warning": "Warning",
+          "alarm": "Alarm",
+          "off": "Off"
+        }
+      },
       "mac_address": {
         "name": "MAC address"
       },

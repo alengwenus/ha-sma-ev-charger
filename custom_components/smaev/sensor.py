@@ -143,6 +143,32 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
         entity_registry_enabled_default=True,
     ),
     SmaEvChargerSensorEntityDescription(
+        key="connected_vehicle_status",
+        translation_key="connected_vehicle_status",
+        type=SMAEV_MEASUREMENT,
+        channel="Measurement.Operation.EVeh.Health",
+        value_mapping={
+            SmaEvChargerMeasurements.OK: "ok",
+            SmaEvChargerMeasurements.WARNING: "warning",
+            SmaEvChargerMeasurements.ALARM: "alarm",
+            SmaEvChargerMeasurements.OFF: "off",
+        },
+        entity_registry_enabled_default=True,
+    ),
+    SmaEvChargerSensorEntityDescription(
+        key="charging_station_status",
+        translation_key="charging_station_status",
+        type=SMAEV_MEASUREMENT,
+        channel="Measurement.Operation.Health",
+        value_mapping={
+            SmaEvChargerMeasurements.OK: "ok",
+            SmaEvChargerMeasurements.WARNING: "warning",
+            SmaEvChargerMeasurements.ALARM: "alarm",
+            SmaEvChargerMeasurements.OFF: "off",
+        },
+        entity_registry_enabled_default=True,
+    ),
+    SmaEvChargerSensorEntityDescription(
         key="mac_address",
         translation_key="mac_address",
         type=SMAEV_PARAMETER,
