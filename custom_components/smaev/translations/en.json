@@ -1,132 +1,131 @@
 {
-    "config": {
-        "abort": {
-            "already_configured": "Device is already configured"
-        },
-        "error": {
-            "cannot_connect": "Failed to connect",
-            "invalid_auth": "Invalid authentication",
-            "unknown": "Unexpected error"
-        },
-        "step": {
-            "user": {
-                "data": {
-                    "host": "Host",
-                    "password": "Password",
-                    "ssl": "Uses an SSL certificate",
-                    "username": "Username",
-                    "verify_ssl": "Verify SSL certificate"
-                },
-                "description": "Enter your  SMA EV Charger device information.",
-                "title": "Set up SMA EV Charger"
-            }
-        }
+  "config": {
+    "abort": {
+      "already_configured": "Device is already configured",
+      "reauth_successful": "Re-authentication was successful"
     },
-    "entity": {
-        "datetime": {
-            "end_charging_process": {
-                "name": "End of charging process"
-            }
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
+    },
+    "step": {
+      "reauth_confirm": {
+        "description": "The SMA EV Charger integration needs to re-authenticate your account",
+        "title": "Reauthenticate integration"
+      },
+      "user": {
+        "data": {
+          "host": "Host",
+          "password": "Password",
+          "ssl": "Uses an SSL certificate",
+          "username": "Username",
+          "verify_ssl": "Verify SSL certificate"
         },
-        "number": {
-            "duration_charge_session": {
-                "name": "Duration of the charge session"
-            },
-            "energy_charge_session": {
-                "name": "Energy quantity of the charge session"
-            },
-            "standby_charge_disconnect": {
-                "name": "Standby for charging process to disconnection"
-            }
-        },
-        "select": {
-            "led_brightness": {
-                "name": "Brightness of the LEDs",
-                "state": {
-                    "average": "Average",
-                    "high": "High",
-                    "low": "Low"
-                }
-            },
-            "operating_mode_of_charge_session": {
-                "name": "Operating mode of charge session",
-                "state": {
-                    "boost_charging": "Boost charging",
-                    "charge_stop": "Charge stop",
-                    "optimized_charging": "Optimized charging",
-                    "setpoint_charging": "Charging with setpoint"
-                }
-            }
-        },
-        "sensor": {
-            "charging_session_energy": {
-                "name": "Charging session energy"
-            },
-            "charging_session_status": {
-                "name": "Charging session status",
-                "state": {
-                    "active_mode": "In active mode",
-                    "not_connected": "Not connected",
-                    "sleep_mode": "In sleep mode"
-                }
-            },
-            "charging_station_meter_reading": {
-                "name": "Charging station meter reading"
-            },
-            "charging_station_power": {
-                "name": "Charging station power"
-            },
-            "grid_current_phase_l1": {
-                "name": "Grid current phase L1"
-            },
-            "grid_current_phase_l2": {
-                "name": "Grid current phase L2"
-            },
-            "grid_current_phase_l3": {
-                "name": "Grid current phase L3"
-            },
-            "grid_frequency": {
-                "name": "Grid frequency"
-            },
-            "grid_voltage_phase_l1": {
-                "name": "Grid voltage phase L1"
-            },
-            "grid_voltage_phase_l2": {
-                "name": "Grid voltage phase L2"
-            },
-            "grid_voltage_phase_l3": {
-                "name": "Grid voltage phase L3"
-            },
-            "mac_address": {
-                "name": "MAC address"
-            },
-            "nominal_current_all_phases": {
-                "name": "Nominal current of all phases"
-            },
-            "operating_mode_of_charge_session": {
-                "name": "Operating mode of charge session"
-            },
-            "position_of_rotary_switch": {
-                "name": "Position of rotary switch",
-                "state": {
-                    "boost_charging": "Boost charging",
-                    "smart_charging": "Smart charging"
-                }
-            },
-            "rated_active_power": {
-                "name": "Rated active power"
-            },
-            "wifi_mac_address": {
-                "name": "Wi-Fi-MAC address"
-            }
-        },
-        "switch": {
-            "full_charge_disconnect": {
-                "name": "Disconnection after full charge"
-            },
-            "manual_charging_release": {
-                "name": "Manual charging release"
-            }
-        }
+        "description": "Enter your  SMA EV Charger device information.",
+        "title": "Set up SMA EV Charger"
+      }
     }
+  },
+  "entity": {
+    "datetime": {
+      "end_charging_process": {
+        "name": "End of charging process"
+      }
+    },
+    "number": {
+      "duration_charge_session": {
+        "name": "Duration of the charge session"
+      },
+      "energy_charge_session": {
+        "name": "Energy quantity of the charge session"
+      },
+      "standby_charge_disconnect": {
+        "name": "Standby for charging process to disconnection"
+      }
+    },
+    "select": {
+      "led_brightness": {
+        "name": "Brightness of the LEDs",
+        "state": {
+          "average": "Average",
+          "high": "High",
+          "low": "Low"
+        }
+      },
+      "operating_mode_of_charge_session": {
+        "name": "Operating mode of charge session",
+        "state": {
+          "boost_charging": "Boost charging",
+          "charge_stop": "Charge stop",
+          "optimized_charging": "Optimized charging",
+          "setpoint_charging": "Charging with setpoint"
+        }
+      }
+    },
+    "sensor": {
+      "charging_session_energy": {
+        "name": "Charging session energy"
+      },
+      "charging_session_status": {
+        "name": "Charging session status",
+        "state": {
+          "active_mode": "In active mode",
+          "not_connected": "Not connected",
+          "sleep_mode": "In sleep mode"
+        }
+      },
+      "charging_station_meter_reading": {
+        "name": "Charging station meter reading"
+      },
+      "charging_station_power": {
+        "name": "Charging station power"
+      },
+      "grid_current_phase_l1": {
+        "name": "Grid current phase L1"
+      },
+      "grid_current_phase_l2": {
+        "name": "Grid current phase L2"
+      },
+      "grid_current_phase_l3": {
+        "name": "Grid current phase L3"
+      },
+      "grid_frequency": {
+        "name": "Grid frequency"
+      },
+      "grid_voltage_phase_l1": {
+        "name": "Grid voltage phase L1"
+      },
+      "grid_voltage_phase_l2": {
+        "name": "Grid voltage phase L2"
+      },
+      "grid_voltage_phase_l3": {
+        "name": "Grid voltage phase L3"
+      },
+      "mac_address": {
+        "name": "MAC address"
+      },
+      "operating_mode_of_charge_session": {
+        "name": "Operating mode of charge session"
+      },
+      "position_of_rotary_switch": {
+        "name": "Position of rotary switch",
+        "state": {
+          "boost_charging": "Boost charging",
+          "smart_charging": "Smart charging"
+        }
+      },
+      "wifi_mac_address": {
+        "name": "Wi-Fi-MAC address"
+      }
+    },
+    "switch": {
+      "full_charge_disconnect": {
+        "name": "Disconnection after full charge"
+      },
+      "manual_charging_release": {
+        "name": "Manual charging release"
+      }
+    }
+  }
 }
