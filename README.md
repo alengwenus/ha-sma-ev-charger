@@ -49,6 +49,6 @@ You probably **do not** want to do this! Use one of the HACS methods above unles
 1. Change the SSL setting to your needs (e.g. if you access the wallbox through a proxy)
 1. Click `Submit`
 
-[<img src=".github/screenshots/install.png" width="300">](.github/screenshots/install.png)
+[<img src="https://github.com/alengwenus/ha-sma-ev-charger/blob/main/.github/screenshots/install.png" width="300">](https://github.com/alengwenus/ha-sma-ev-charger/blob/main/.github/screenshots/install.png)
 
 After successful installation all entities are automatically added to Home Assistant. You may then add them to your dashboards as you like.

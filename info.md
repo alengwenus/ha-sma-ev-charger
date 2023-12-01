@@ -2,7 +2,7 @@
 
 v1.0.3
 
-- Added documentation
+- Add documentation
 
 v1.0.2
 
