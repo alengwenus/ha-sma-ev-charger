@@ -1,6 +1,11 @@
 ### Changes
 
-v1.04
+v1.0.5
+
+- Add sensor: Status of connected vehicle
+- Add sensor: Status of charging station
+
+v1.0.4
 
 - Add German translation
 
