@@ -1,0 +1,131 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Gerät ist bereits konfiguriert",
+      "reauth_successful": "Die erneute Authentifizierung war erfolgreich"
+    },
+    "error": {
+      "cannot_connect": "Verbindung fehlgeschlagen",
+      "invalid_auth": "Ungültige Authentifizierung",
+      "unknown": "Unerwarteter Fehler"
+    },
+    "step": {
+      "reauth_confirm": {
+        "description": "Die SMA EV Charger-Integration muss dein Konto erneut authentifizieren",
+        "title": "Integration erneut authentifizieren"
+      },
+      "user": {
+        "data": {
+          "host": "Host",
+          "password": "Passwort",
+          "ssl": "Verwende ein SSL-Zertifikat",
+          "username": "Benutzername",
+          "verify_ssl": "SSL-Zertifikat überprüfen"
+        },
+        "description": "Gib deine SMA EV Charger-Geräteinformation ein.",
+        "title": "Richte SMA EV Charger ein"
+      }
+    }
+  },
+  "entity": {
+    "datetime": {
+      "end_charging_process": {
+        "name": "Ende des Ladevorgangs"
+      }
+    },
+    "number": {
+      "duration_charge_session": {
+        "name": "Dauer des Ladevorgangs"
+      },
+      "energy_charge_session": {
+        "name": "Energiemenge des Ladevorgangs"
+      },
+      "standby_charge_disconnect": {
+        "name": "Ladebereitschaft bis Trennung"
+      }
+    },
+    "select": {
+      "led_brightness": {
+        "name": "Helligkeit der LEDs",
+        "state": {
+          "average": "Mittel",
+          "high": "Hoch",
+          "low": "Gering"
+        }
+      },
+      "operating_mode_of_charge_session": {
+        "name": "Betriebsart des Ladevorgangs",
+        "state": {
+          "boost_charging": "Schnellladen",
+          "charge_stop": "Ladestopp",
+          "optimized_charging": "Optimiertes Laden",
+          "setpoint_charging": "Laden mit Zielvorgabe"
+        }
+      }
+    },
+    "sensor": {
+      "charging_session_energy": {
+        "name": "Energie Ladevorgang"
+      },
+      "charging_session_status": {
+        "name": "Status Ladevorgang",
+        "state": {
+          "active_mode": "Ladevorgang aktiv",
+          "not_connected": "nicht verbunden",
+          "sleep_mode": "Ladevorgang inaktiv"
+        }
+      },
+      "charging_station_meter_reading": {
+        "name": "Zählerstand Ladestation"
+      },
+      "charging_station_power": {
+        "name": "Leistung Ladestation"
+      },
+      "grid_current_phase_l1": {
+        "name": "Netzstrom Phase L1"
+      },
+      "grid_current_phase_l2": {
+        "name": "Netzstrom Phase L2"
+      },
+      "grid_current_phase_l3": {
+        "name": "Netzstrom Phase L3"
+      },
+      "grid_frequency": {
+        "name": "Netzfrequenz"
+      },
+      "grid_voltage_phase_l1": {
+        "name": "Netzspannung Phase L1"
+      },
+      "grid_voltage_phase_l2": {
+        "name": "Netzspannung Phase L2"
+      },
+      "grid_voltage_phase_l3": {
+        "name": "Netzspannung Phase L3"
+      },
+      "mac_address": {
+        "name": "MAC-Adresse"
+      },
+      "operating_mode_of_charge_session": {
+        "name": "Betriebsart des Ladevorgangs"
+      },
+      "position_of_rotary_switch": {
+        "name": "Schalterstellung Drehschalter",
+        "state": {
+          "boost_charging": "Schnellladen",
+          "smart_charging": "Intelligentes Laden"
+        }
+      },
+      "wifi_mac_address": {
+        "name": "WLAN-MAC Adresse"
+      }
+    },
+    "switch": {
+      "full_charge_disconnect": {
+        "name": "Trennung nach Vollladung"
+      },
+      "manual_charging_release": {
+        "name": "Manuelle Ladefreigabe"
+      }
+    }
+  }
+}
