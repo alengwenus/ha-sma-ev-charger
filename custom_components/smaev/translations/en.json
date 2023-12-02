@@ -1,30 +1,41 @@
 {
   "config": {
-    "abort": {
-      "already_configured": "Device is already configured",
-      "reauth_successful": "Re-authentication was successful"
-    },
-    "error": {
-      "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication",
-      "unknown": "Unexpected error"
-    },
     "step": {
-      "reauth_confirm": {
-        "description": "The SMA EV Charger integration needs to re-authenticate your account",
-        "title": "Reauthenticate integration"
-      },
       "user": {
         "data": {
-          "host": "Host",
-          "password": "Password",
-          "ssl": "Uses an SSL certificate",
-          "username": "Username",
-          "verify_ssl": "Verify SSL certificate"
+          "host": "[%key:common::config_flow::data::host%]",
+          "username": "[%key:common::config_flow::data::username%]",
+          "password": "[%key:common::config_flow::data::password%]",
+          "ssl": "[%key:common::config_flow::data::ssl%]",
+          "verify_ssl": "[%key:common::config_flow::data::verify_ssl%]"
         },
         "description": "Enter your  SMA EV Charger device information.",
         "title": "Set up SMA EV Charger"
+      },
+      "reauth_confirm": {
+        "title": "[%key:common::config_flow::title::reauth%]",
+        "description": "The SMA EV Charger integration needs to re-authenticate your account"
       }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+    }
+  },
+  "services": {
+    "restart": {
+      "name": "Initiate device restart",
+      "description": "Restarts the SMA EV Charger device."
+    }
+  },
+  "device_automation": {
+    "action_type": {
+      "restart": "Initiate restart"
     }
   },
   "entity": {
@@ -34,32 +45,32 @@
       }
     },
     "number": {
+      "standby_charge_disconnect": {
+        "name": "Standby for charging process to disconnection"
+      },
       "duration_charge_session": {
         "name": "Duration of the charge session"
       },
       "energy_charge_session": {
         "name": "Energy quantity of the charge session"
-      },
-      "standby_charge_disconnect": {
-        "name": "Standby for charging process to disconnection"
       }
     },
     "select": {
-      "led_brightness": {
-        "name": "Brightness of the LEDs",
-        "state": {
-          "average": "Average",
-          "high": "High",
-          "low": "Low"
-        }
-      },
       "operating_mode_of_charge_session": {
         "name": "Operating mode of charge session",
         "state": {
           "boost_charging": "Boost charging",
-          "charge_stop": "Charge stop",
           "optimized_charging": "Optimized charging",
-          "setpoint_charging": "Charging with setpoint"
+          "setpoint_charging": "Charging with setpoint",
+          "charge_stop": "Charge stop"
+        }
+      },
+      "led_brightness": {
+        "name": "Brightness of the LEDs",
+        "state": {
+          "low": "Low",
+          "average": "Average",
+          "high": "High"
         }
       }
     },
@@ -67,37 +78,12 @@
       "charging_session_energy": {
         "name": "Charging session energy"
       },
-      "charging_session_status": {
-        "name": "Charging session status",
+      "position_of_rotary_switch": {
+        "name": "Position of rotary switch",
         "state": {
-          "active_mode": "In active mode",
-          "not_connected": "Not connected",
-          "sleep_mode": "In sleep mode"
+          "smart_charging": "Smart charging",
+          "boost_charging": "Boost charging"
         }
-      },
-      "connected_vehicle_status": {
-        "name": "Status of connected vehicle",
-        "state": {
-          "ok": "Ok",
-          "warning": "Warning",
-          "alarm": "Alarm",
-          "off": "Off"
-        }
-      },
-      "charging_station_status": {
-        "name": "Status of charging station",
-        "state": {
-          "ok": "Ok",
-          "warning": "Warning",
-          "alarm": "Alarm",
-          "off": "Off"
-        }
-      },
-      "charging_station_meter_reading": {
-        "name": "Charging station meter reading"
-      },
-      "charging_station_power": {
-        "name": "Charging station power"
       },
       "grid_current_phase_l1": {
         "name": "Grid current phase L1"
@@ -120,29 +106,51 @@
       "grid_voltage_phase_l3": {
         "name": "Grid voltage phase L3"
       },
+      "charging_station_power": {
+        "name": "Charging station power"
+      },
+      "charging_station_meter_reading": {
+        "name": "Charging station meter reading"
+      },
+      "charging_session_status": {
+        "name": "Charging session status",
+        "state": {
+          "not_connected": "Not connected",
+          "sleep_mode": "In sleep mode",
+          "active_mode": "In active mode"
+        }
+      },
+      "connected_vehicle_status": {
+        "name": "Status of connected vehicle",
+        "state": {
+          "ok": "Ok",
+          "warning": "Warning",
+          "alarm": "Alarm",
+          "off": "Off"
+        }
+      },
+      "charging_station_status": {
+        "name": "Status of charging station",
+        "state": {
+          "ok": "Ok",
+          "warning": "Warning",
+          "alarm": "Alarm",
+          "off": "Off"
+        }
+      },
       "mac_address": {
         "name": "MAC address"
-      },
-      "operating_mode_of_charge_session": {
-        "name": "Operating mode of charge session"
-      },
-      "position_of_rotary_switch": {
-        "name": "Position of rotary switch",
-        "state": {
-          "boost_charging": "Boost charging",
-          "smart_charging": "Smart charging"
-        }
       },
       "wifi_mac_address": {
         "name": "Wi-Fi-MAC address"
       }
     },
     "switch": {
-      "full_charge_disconnect": {
-        "name": "Disconnection after full charge"
-      },
       "manual_charging_release": {
         "name": "Manual charging release"
+      },
+      "full_charge_disconnect": {
+        "name": "Disconnection after full charge"
       }
     }
   }

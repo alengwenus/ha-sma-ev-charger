@@ -27,6 +27,17 @@
       "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
     }
   },
+  "services": {
+    "restart": {
+      "name": "Initiate device restart",
+      "description": "Restart SMA EV Charger device."
+    }
+  },
+  "device_automation": {
+    "action_type": {
+      "restart": "Initiate restart"
+    }
+  },
   "entity": {
     "datetime": {
       "end_charging_process": {
@@ -129,9 +140,6 @@
       },
       "mac_address": {
         "name": "MAC address"
-      },
-      "operating_mode_of_charge_session": {
-        "name": "Operating mode of charge session"
       },
       "wifi_mac_address": {
         "name": "Wi-Fi-MAC address"

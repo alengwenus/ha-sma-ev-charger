@@ -1,7 +1,6 @@
 """The SMA EV Charger integration."""
 from __future__ import annotations
 
-from datetime import timedelta
 import logging
 from typing import TYPE_CHECKING
 
@@ -15,7 +14,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
     CONF_SSL,
     CONF_USERNAME,
     CONF_VERIFY_SSL,
@@ -25,17 +23,17 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+
 
 from .const import (
-    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     SMAEV_COORDINATOR,
     SMAEV_DEVICE_INFO,
-    SMAEV_MEASUREMENT,
     SMAEV_OBJECT,
-    SMAEV_PARAMETER,
 )
+from .coordinator import SmaEvChargerCoordinator
+from .services import async_setup_services, async_unload_services
+
 
 PLATFORMS: list[Platform] = [
     Platform.DATETIME,
@@ -93,6 +91,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
+    # Register Integration-wide Services:
+    async_setup_services(hass)
+
     return True
 
 
@@ -105,40 +106,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         hass.data[DOMAIN].pop(entry.entry_id)
 
+    async_unload_services(hass)
+
     return unload_ok
-
-
-class SmaEvChargerCoordinator(DataUpdateCoordinator):
-    """SmaEvCharger coordinator."""
-
-    def __init__(
-        self, hass: HomeAssistant, entry: ConfigEntry, evcharger: SmaEvCharger
-    ) -> None:
-        """Initialize the coordinator."""
-        interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
-        super().__init__(
-            hass, _LOGGER, name="smaev", update_interval=timedelta(seconds=interval)
-        )
-        self.evcharger = evcharger
-
-    async def _async_update_data(self):
-        """Fetch data from SmaEvCharger."""
-        data = {}
-        if self.evcharger.is_closed:
-            try:
-                await self.evcharger.open()
-            except SmaEvChargerConnectionException:
-                raise UpdateFailed("Could not connect to SMA EV Charger.")
-            except SmaEvChargerAuthenticationException as exc:
-                raise ConfigEntryAuthFailed from exc
-
-        try:
-            data[SMAEV_MEASUREMENT] = await self.evcharger.request_measurements()
-            data[SMAEV_PARAMETER] = await self.evcharger.request_parameters()
-        except SmaEvChargerConnectionException as exc:
-            raise UpdateFailed(exc) from exc
-
-        if not all((data[SMAEV_MEASUREMENT], data[SMAEV_PARAMETER])):
-            raise UpdateFailed("No valid data received.")
-
-        return data

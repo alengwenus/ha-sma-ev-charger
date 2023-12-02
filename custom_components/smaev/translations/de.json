@@ -27,6 +27,17 @@
       }
     }
   },
+  "services": {
+    "restart": {
+      "name": "Geräteneustart auslösen",
+      "description": "Startet den SMA EV Charger neu."
+    }
+  },
+  "device_automation": {
+    "action_type": {
+      "restart": "Geräteneustart auslösen"
+    }
+  },
   "entity": {
     "datetime": {
       "end_charging_process": {
@@ -122,9 +133,6 @@
       },
       "mac_address": {
         "name": "MAC-Adresse"
-      },
-      "operating_mode_of_charge_session": {
-        "name": "Betriebsart des Ladevorgangs"
       },
       "position_of_rotary_switch": {
         "name": "Schalterstellung Drehschalter",
