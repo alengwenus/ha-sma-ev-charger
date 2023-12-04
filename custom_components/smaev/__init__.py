@@ -124,6 +124,14 @@ class SmaEvChargerCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Fetch data from SmaEvCharger."""
         data = {}
+        if self.evcharger.is_closed:
+            try:
+                await self.evcharger.open()
+            except SmaEvChargerConnectionException:
+                raise UpdateFailed("Could not connect to SMA EV Charger.")
+            except SmaEvChargerAuthenticationException as exc:
+                raise ConfigEntryAuthFailed from exc
+
         try:
             data[SMAEV_MEASUREMENT] = await self.evcharger.request_measurements()
             data[SMAEV_PARAMETER] = await self.evcharger.request_parameters()
