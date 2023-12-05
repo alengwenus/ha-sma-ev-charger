@@ -5,13 +5,12 @@ import logging
 from pysmaev.core import (
     SmaEvCharger,
     SmaEvChargerConnectionException,
-    SmaEvChargerException
+    SmaEvChargerException,
 )
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
