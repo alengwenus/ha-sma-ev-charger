@@ -16,3 +16,5 @@ v1.0.3
 v1.0.2
 
 - Initial version
+  
+![demo](https://github.com/alengwenus/ha-sma-ev-charger/assets/26517052/3f37bc70-4a35-4817-a834-d1a58a066c33)
