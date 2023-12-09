@@ -3,28 +3,28 @@
     "step": {
       "user": {
         "data": {
-          "host": "[%key:common::config_flow::data::host%]",
-          "username": "[%key:common::config_flow::data::username%]",
-          "password": "[%key:common::config_flow::data::password%]",
-          "ssl": "[%key:common::config_flow::data::ssl%]",
-          "verify_ssl": "[%key:common::config_flow::data::verify_ssl%]"
+          "host": "Host",
+          "username": "Username",
+          "password": "Password",
+          "ssl": "Use an SSL certificate",
+          "verify_ssl": "Verify SSL certificate"
         },
         "description": "Enter your  SMA EV Charger device information.",
         "title": "Set up SMA EV Charger"
       },
       "reauth_confirm": {
-        "title": "[%key:common::config_flow::title::reauth%]",
+        "title": "Reauthenticate integration",
         "description": "The SMA EV Charger integration needs to re-authenticate your account"
       }
     },
     "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
     },
     "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
-      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+      "already_configured": "Device is already configured",
+      "reauth_successful": "Re-authentication was successful"
     }
   },
   "services": {
