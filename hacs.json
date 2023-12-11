@@ -1,5 +1,5 @@
 {
   "name": "SMA EV Charger",
   "render_readme": true,
-  "homeassistant": "2023.7"
+  "homeassistant": "2023.9"
 }
