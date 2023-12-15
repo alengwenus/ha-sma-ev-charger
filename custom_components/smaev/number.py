@@ -14,7 +14,7 @@ from homeassistant.components.number import (
     NumberMode,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory, UnitOfEnergy, UnitOfTime
+from homeassistant.const import EntityCategory, UnitOfEnergy, UnitOfTime, UnitOfElectricCurrent
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -79,8 +79,27 @@ NUMBER_DESCRIPTIONS: tuple[SmaEvChargerNumberEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         entity_registry_enabled_default=True,
     ),
+    SmaEvChargerNumberEntityDescription(
+        key="charge_current_limit",
+        translation_key="charge_current_limit",
+        type=SMAEV_PARAMETER,
+        channel="Parameter.Inverter.AcALim",
+        native_step=1,
+        mode=NumberMode.BOX,
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        entity_registry_enabled_default=True,
+    ),
+    SmaEvChargerNumberEntityDescription(
+        key="charge_power_limit",
+        translation_key="charge_power_limit",
+        type=SMAEV_PARAMETER,
+        channel="Parameter.Inverter.WMax",
+        native_step=1,
+        mode=NumberMode.BOX,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        entity_registry_enabled_default=True,
+    ),
 )
-
 
 async def async_setup_entry(
     hass: HomeAssistant,
