@@ -93,7 +93,7 @@ NUMBER_DESCRIPTIONS: tuple[SmaEvChargerNumberEntityDescription, ...] = (
         native_step=1,
         mode=NumberMode.BOX,
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
-        entity_registry_enabled_default=True,
+        entity_registry_enabled_default=False,
     ),
     SmaEvChargerNumberEntityDescription(
         key="charge_power_limit",
@@ -103,7 +103,7 @@ NUMBER_DESCRIPTIONS: tuple[SmaEvChargerNumberEntityDescription, ...] = (
         native_step=1,
         mode=NumberMode.BOX,
         native_unit_of_measurement=UnitOfPower.WATT,
-        entity_registry_enabled_default=True,
+        entity_registry_enabled_default=False,
     ),
 )
 
