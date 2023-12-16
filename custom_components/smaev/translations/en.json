@@ -53,6 +53,12 @@
       },
       "energy_charge_session": {
         "name": "Energy quantity of the charge session"
+      },
+      "charge_current_limit": {
+        "name": "AC current limitation"
+      },
+      "charge_power_limit": {
+        "name": "Active power limit"
       }
     },
     "select": {

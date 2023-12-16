@@ -53,6 +53,12 @@
       },
       "standby_charge_disconnect": {
         "name": "Ladebereitschaft bis Trennung"
+      },
+      "charge_current_limit": {
+        "name": "AC-Strom Begrenzung"
+      },
+      "charge_power_limit": {
+        "name": "Leistungsbegrenzung"
       }
     },
     "select": {
