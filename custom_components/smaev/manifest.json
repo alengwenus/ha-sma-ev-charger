@@ -10,6 +10,6 @@
   "issue_tracker": "https://github.com/alengwenus/ha-sma-ev-charger/issues",
   "requirements": ["pysmaev==0.1.4"],
   "ssdp": [],
-  "version": "1.0.8",
+  "version": "1.0.10",
   "zeroconf": []
 }
