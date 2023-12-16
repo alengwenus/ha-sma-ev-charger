@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.6
+    hooks:
+      - id: ruff
+        args:
+          - --fix
+      - id: ruff-format
+        files: ^((custom_components|tests)/.+)?[^/]+\.py$
+  - repo: https://github.com/psf/black
+    rev: 22.12.0
+    hooks:
+      - id: black
+        args:
+          - --safe
+          - --quiet
+        files: ^((custom_components|tests)/.+)?[^/]+\.py$
