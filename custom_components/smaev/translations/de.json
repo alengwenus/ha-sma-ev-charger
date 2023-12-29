@@ -89,7 +89,8 @@
         "state": {
           "active_mode": "Ladevorgang aktiv",
           "not_connected": "nicht verbunden",
-          "sleep_mode": "schlafend"
+          "sleep_mode": "schlafend",
+          "station_locked": "Ladestation gesperrt"
         }
       },
       "connected_vehicle_status": {
