@@ -139,6 +139,7 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
             SmaEvChargerMeasurements.NOT_CONNECTED: "not_connected",
             SmaEvChargerMeasurements.SLEEP_MODE: "sleep_mode",
             SmaEvChargerMeasurements.ACTIVE_MODE: "active_mode",
+            SmaEvChargerMeasurements.STATION_LOCKED: "station_locked",
         },
         entity_registry_enabled_default=True,
     ),
