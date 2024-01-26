@@ -1,19 +1,6 @@
 {
   "config": {
-    "abort": {
-      "already_configured": "Gerät ist bereits konfiguriert",
-      "reauth_successful": "Die erneute Authentifizierung war erfolgreich"
-    },
-    "error": {
-      "cannot_connect": "Verbindung fehlgeschlagen",
-      "invalid_auth": "Ungültige Authentifizierung",
-      "unknown": "Unerwarteter Fehler"
-    },
     "step": {
-      "reauth_confirm": {
-        "description": "Die SMA EV Charger-Integration muss dein Konto erneut authentifizieren",
-        "title": "Integration erneut authentifizieren"
-      },
       "user": {
         "data": {
           "host": "Host",
@@ -22,9 +9,42 @@
           "username": "Benutzername",
           "verify_ssl": "SSL-Zertifikat überprüfen"
         },
-        "description": "Gib deine SMA EV Charger-Geräteinformation ein.",
-        "title": "Richte SMA EV Charger ein"
+        "title": "Richte den SMA EV Charger ein",
+        "description": "Gib deine SMA EV Charger-Geräteinformation ein."
+      },
+      "reauth_confirm": {
+        "title": "Integration erneut authentifizieren",
+        "description": "Die SMA EV Charger-Integration muss dein Konto erneut authentifizieren"
       }
+    },
+    "error": {
+      "cannot_connect": "Verbindung fehlgeschlagen",
+      "invalid_auth": "Ungültige Authentifizierung",
+      "unknown": "Unerwarteter Fehler"
+    },
+    "abort": {
+      "already_configured": "Gerät ist bereits konfiguriert",
+      "reauth_successful": "Die erneute Authentifizierung war erfolgreich"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "host": "Host",
+          "password": "Passwort",
+          "ssl": "Verwende ein SSL-Zertifikat",
+          "username": "Benutzername",
+          "verify_ssl": "SSL-Zertifikat überprüfen"
+        },
+        "title": "Richte den SMA EV Charger ein",
+        "description": "Gib deine SMA EV Charger-Geräteinformation ein."
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung fehlgeschlagen",
+      "invalid_auth": "Ungültige Authentifizierung",
+      "unknown": "Unerwarteter Fehler"
     }
   },
   "services": {
