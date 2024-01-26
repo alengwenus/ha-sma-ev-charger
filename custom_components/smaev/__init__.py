@@ -4,8 +4,8 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from pysmaev.core import (
-    SmaEvCharger,
+from pysmaev.core import SmaEvCharger
+from pysmaev.exceptions import (
     SmaEvChargerAuthenticationError,
     SmaEvChargerConnectionError,
 )
