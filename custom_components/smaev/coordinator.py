@@ -4,8 +4,8 @@ import logging
 
 from pysmaev.core import (
     SmaEvCharger,
-    SmaEvChargerConnectionException,
-    SmaEvChargerException,
+    SmaEvChargerConnectionError,
+    SmaEvChargerError,
 )
 
 from homeassistant.config_entries import ConfigEntry
@@ -44,14 +44,14 @@ class SmaEvChargerCoordinator(DataUpdateCoordinator):
         if self.evcharger.is_closed:
             try:
                 await self.evcharger.open()
-            except SmaEvChargerException:
+            except SmaEvChargerError:
                 raise UpdateFailed("Connection to device lost.")
 
         data = {}
         try:
             data[SMAEV_MEASUREMENT] = await self.evcharger.request_measurements()
             data[SMAEV_PARAMETER] = await self.evcharger.request_parameters()
-        except SmaEvChargerConnectionException as exc:
+        except SmaEvChargerConnectionError as exc:
             raise UpdateFailed(exc) from exc
 
         if not all((data[SMAEV_MEASUREMENT], data[SMAEV_PARAMETER])):

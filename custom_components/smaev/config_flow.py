@@ -7,8 +7,8 @@ from typing import Any
 
 from pysmaev.core import (
     SmaEvCharger,
-    SmaEvChargerAuthenticationException,
-    SmaEvChargerConnectionException,
+    SmaEvChargerAuthenticationError,
+    SmaEvChargerConnectionError,
 )
 import voluptuous as vol
 
@@ -67,9 +67,9 @@ class SmaEvChargerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 device_info = await validate_input(self.hass, user_input)
-            except SmaEvChargerConnectionException:
+            except SmaEvChargerConnectionError:
                 errors["base"] = "cannot_connect"
-            except SmaEvChargerAuthenticationException:
+            except SmaEvChargerAuthenticationError:
                 errors["base"] = "invalid_auth"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
