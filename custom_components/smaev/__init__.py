@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 
 from pysmaev.core import (
     SmaEvCharger,
-    SmaEvChargerAuthenticationException,
-    SmaEvChargerConnectionException,
+    SmaEvChargerAuthenticationError,
+    SmaEvChargerConnectionError,
 )
 
 from homeassistant.config_entries import ConfigEntry
@@ -63,9 +63,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     try:
         await evcharger.open()
         smaev_device_info = await evcharger.device_info()
-    except SmaEvChargerConnectionException as exc:
+    except SmaEvChargerConnectionError as exc:
         raise ConfigEntryNotReady from exc
-    except SmaEvChargerAuthenticationException as exc:
+    except SmaEvChargerAuthenticationError as exc:
         raise ConfigEntryAuthFailed from exc
 
     if TYPE_CHECKING:
