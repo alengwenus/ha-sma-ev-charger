@@ -7,6 +7,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from pysmaev.const import SmaEvChargerParameters
+from pysmaev.exceptions import SmaEvChargerChannelError
 from pysmaev.helpers import get_parameters_channel
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
@@ -127,10 +128,13 @@ class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        channel = get_parameters_channel(
-            self.coordinator.data[SMAEV_PARAMETER],
-            self.entity_description.channel,
-        )
+        try:
+            channel = get_parameters_channel(
+                self.coordinator.data[SMAEV_PARAMETER],
+                self.entity_description.channel,
+            )
+        except SmaEvChargerChannelError:
+            return
 
         possible_values = channel[SMAEV_POSSIBLE_VALUES]
         value = channel[SMAEV_VALUE]
