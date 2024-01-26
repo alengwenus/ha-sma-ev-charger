@@ -5,11 +5,12 @@ from collections.abc import Mapping
 import logging
 from typing import Any
 
-from pysmaev.core import (
-    SmaEvCharger,
+from pysmaev.core import SmaEvCharger
+from pysmaev.exceptions import (
     SmaEvChargerAuthenticationError,
     SmaEvChargerConnectionError,
 )
+
 import voluptuous as vol
 
 from homeassistant import config_entries

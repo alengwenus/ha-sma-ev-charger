@@ -2,11 +2,8 @@
 from datetime import timedelta
 import logging
 
-from pysmaev.core import (
-    SmaEvCharger,
-    SmaEvChargerConnectionError,
-    SmaEvChargerError,
-)
+from pysmaev.core import SmaEvCharger
+from pysmaev.exceptions import SmaEvChargerConnectionError, SmaEvChargerException
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
@@ -44,7 +41,7 @@ class SmaEvChargerCoordinator(DataUpdateCoordinator):
         if self.evcharger.is_closed:
             try:
                 await self.evcharger.open()
-            except SmaEvChargerError:
+            except SmaEvChargerException:
                 raise UpdateFailed("Connection to device lost.")
 
         data = {}
