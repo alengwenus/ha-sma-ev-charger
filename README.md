@@ -42,6 +42,8 @@ You probably **do not** want to do this! Use one of the HACS methods above unles
 
 ### Configuration
 
+**Attention**: To be able to use all entities, an installer or administrator account (as defined in the SMA EV Charger web UI) must be used!
+
 1. [Click Here](https://my.home-assistant.io/redirect/config_flow_start/?domain=smaev) to directly add a `SMA EV Charger` integration **or**<br/>
    a. In Home Assistant, go to Settings -> [Integrations](https://my.home-assistant.io/redirect/integrations/)<br/>
    b. Click `+ Add Integrations` and select `SMA EV Charger`<br/>
