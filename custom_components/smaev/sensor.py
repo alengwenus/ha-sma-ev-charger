@@ -73,6 +73,8 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
             SmaEvChargerMeasurements.SMART_CHARGING: "smart_charging",
             SmaEvChargerMeasurements.BOOST_CHARGING: "boost_charging",
         },
+        device_class=SensorDeviceClass.ENUM,
+        options=["smart_charging", "boost_charging"],
         entity_registry_enabled_default=True,
     ),
     *(
@@ -142,6 +144,8 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
             SmaEvChargerMeasurements.ACTIVE_MODE: "active_mode",
             SmaEvChargerMeasurements.STATION_LOCKED: "station_locked",
         },
+        device_class=SensorDeviceClass.ENUM,
+        options=["not_connected", "sleep_mode", "active_mode", "station_locked"],
         entity_registry_enabled_default=True,
     ),
     SmaEvChargerSensorEntityDescription(
@@ -155,6 +159,8 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
             SmaEvChargerMeasurements.ALARM: "alarm",
             SmaEvChargerMeasurements.OFF: "off",
         },
+        device_class=SensorDeviceClass.ENUM,
+        options=["ok", "warning", "alarm", "off"],
         entity_registry_enabled_default=True,
     ),
     SmaEvChargerSensorEntityDescription(
@@ -168,6 +174,8 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
             SmaEvChargerMeasurements.ALARM: "alarm",
             SmaEvChargerMeasurements.OFF: "off",
         },
+        device_class=SensorDeviceClass.ENUM,
+        options=["ok", "warning", "alarm", "off"],
         entity_registry_enabled_default=True,
     ),
     SmaEvChargerSensorEntityDescription(
