@@ -8,8 +8,8 @@
   "homekit": {},
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/alengwenus/ha-sma-ev-charger/issues",
-  "requirements": ["pysmaev==0.1.5"],
+  "requirements": ["pysmaev==0.1.6"],
   "ssdp": [],
-  "version": "1.0.11",
+  "version": "1.0.12",
   "zeroconf": []
 }

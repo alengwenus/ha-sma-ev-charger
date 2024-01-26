@@ -6,6 +6,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from pysmaev.const import SmaEvChargerMeasurements
+from pysmaev.exceptions import SmaEvChargerChannelError
 from pysmaev.helpers import get_measurements_channel, get_parameters_channel
 
 from homeassistant.components.sensor import (
@@ -237,18 +238,21 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        if self.entity_description.type == SMAEV_MEASUREMENT:
-            channel = get_measurements_channel(
-                self.coordinator.data[SMAEV_MEASUREMENT],
-                self.entity_description.channel,
-            )
-            value = channel[0][SMAEV_VALUE]
-        else:  # SMAEV_PARAMETER
-            channel = get_parameters_channel(
-                self.coordinator.data[SMAEV_PARAMETER],
-                self.entity_description.channel,
-            )
-            value = channel[SMAEV_VALUE]
+        try:
+            if self.entity_description.type == SMAEV_MEASUREMENT:
+                channel = get_measurements_channel(
+                    self.coordinator.data[SMAEV_MEASUREMENT],
+                    self.entity_description.channel,
+                )
+                value = channel[0][SMAEV_VALUE]
+            else:  # SMAEV_PARAMETER
+                channel = get_parameters_channel(
+                    self.coordinator.data[SMAEV_PARAMETER],
+                    self.entity_description.channel,
+                )
+                value = channel[SMAEV_VALUE]
+        except SmaEvChargerChannelError:
+            return
 
         value = self.entity_description.value_mapping.get(value, value)
 

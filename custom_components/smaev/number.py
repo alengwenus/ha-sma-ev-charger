@@ -6,6 +6,7 @@ from datetime import datetime
 import logging
 from typing import TYPE_CHECKING
 
+from pysmaev.exceptions import SmaEvChargerChannelError
 from pysmaev.helpers import get_parameters_channel
 
 from homeassistant.components.number import (
@@ -159,10 +160,13 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        channel = get_parameters_channel(
-            self.coordinator.data[SMAEV_PARAMETER],
-            self.entity_description.channel,
-        )
+        try:
+            channel = get_parameters_channel(
+                self.coordinator.data[SMAEV_PARAMETER],
+                self.entity_description.channel,
+            )
+        except SmaEvChargerChannelError:
+            return
 
         min_value = channel.get(SMAEV_MIN_VALUE)
         max_value = channel.get(SMAEV_MAX_VALUE)
