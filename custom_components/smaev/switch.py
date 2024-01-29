@@ -6,7 +6,6 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 from pysmaev.const import SmaEvChargerParameters
-from pysmaev.exceptions import SmaEvChargerChannelError
 from pysmaev.helpers import get_parameters_channel
 
 from homeassistant.components.switch import (
@@ -27,6 +26,7 @@ from homeassistant.helpers.update_coordinator import (
 from . import generate_smaev_entity_id
 from .const import (
     DOMAIN,
+    SMAEV_CHANNELS,
     SMAEV_COORDINATOR,
     SMAEV_DEVICE_INFO,
     SMAEV_PARAMETER,
@@ -89,11 +89,17 @@ async def async_setup_entry(
     entities = []
 
     for entity_description in SWITCH_DESCRIPTIONS:
-        entities.append(
-            SmaEvChargerSwitch(
-                hass, coordinator, config_entry, device_info, entity_description
+        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+            entities.append(
+                SmaEvChargerSwitch(
+                    hass, coordinator, config_entry, device_info, entity_description
+                )
             )
-        )
+        else:
+            _LOGGER.warning(
+                "Channel '%s' is not accessible. Elevated rights might be required.",
+                entity_description.channel,
+            )
 
     async_add_entities(entities)
 
@@ -131,13 +137,10 @@ class SmaEvChargerSwitch(CoordinatorEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        try:
-            channel = get_parameters_channel(
-                self.coordinator.data[SMAEV_PARAMETER],
-                self.entity_description.channel,
-            )
-        except SmaEvChargerChannelError:
-            return
+        channel = get_parameters_channel(
+            self.coordinator.data[SMAEV_PARAMETER],
+            self.entity_description.channel,
+        )
 
         value = channel[SMAEV_VALUE]
         self._attr_is_on = self.entity_description.value_mapping.get(value, value)

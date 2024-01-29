@@ -25,6 +25,7 @@ from homeassistant.helpers.update_coordinator import (
 from . import generate_smaev_entity_id
 from .const import (
     DOMAIN,
+    SMAEV_CHANNELS,
     SMAEV_COORDINATOR,
     SMAEV_DEVICE_INFO,
     SMAEV_PARAMETER,
@@ -70,11 +71,17 @@ async def async_setup_entry(
     entities = []
 
     for entity_description in DATETIME_DESCRIPTIONS:
-        entities.append(
-            SmaEvChargerDateTime(
-                hass, coordinator, config_entry, device_info, entity_description
+        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+            entities.append(
+                SmaEvChargerDateTime(
+                    hass, coordinator, config_entry, device_info, entity_description
+                )
             )
-        )
+        else:
+            _LOGGER.warning(
+                "Channel '%s' is not accessible. Elevated rights might be required.",
+                entity_description.channel,
+            )
 
     async_add_entities(entities)
 

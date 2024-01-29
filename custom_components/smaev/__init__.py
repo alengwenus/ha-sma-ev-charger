@@ -25,9 +25,12 @@ from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import (
     DOMAIN,
+    SMAEV_CHANNELS,
     SMAEV_COORDINATOR,
     SMAEV_DEVICE_INFO,
+    SMAEV_MEASUREMENT,
     SMAEV_OBJECT,
+    SMAEV_PARAMETER,
 )
 from .coordinator import SmaEvChargerCoordinator
 from .services import async_setup_services, async_unload_services
@@ -79,12 +82,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sw_version=smaev_device_info["sw_version"],
     )
 
+    measurement_channels = await evcharger.get_measurement_channels()
+    parameter_channels = await evcharger.get_parameter_channels()
+
     coordinator = SmaEvChargerCoordinator(hass, entry, evcharger)
 
     hass.data[DOMAIN][entry.entry_id] = {
         SMAEV_OBJECT: evcharger,
         SMAEV_DEVICE_INFO: device_info,
         SMAEV_COORDINATOR: coordinator,
+        SMAEV_CHANNELS: {
+            SMAEV_MEASUREMENT: measurement_channels,
+            SMAEV_PARAMETER: parameter_channels,
+        },
     }
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
