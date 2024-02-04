@@ -14,6 +14,12 @@ if "HA_CLONE" in os.environ:
     sys.modules["pytest_homeassistant_custom_component"] = __import__("tests")
 
 
+@pytest.fixture(autouse=True)
+def auto_enable_custom_integrations(enable_custom_integrations):
+    """Enable use of custom_components."""
+    yield
+
+
 @pytest.fixture(name="device_info")
 def device_info():
     """Return device info."""
@@ -24,9 +30,3 @@ def device_info():
         "manufacturer": "SMA",
         "sw_version": "1.2.23.R",
     }
-
-
-@pytest.fixture(autouse=True)
-def auto_enable_custom_integrations(enable_custom_integrations):
-    """Enable use of custom_components."""
-    yield
