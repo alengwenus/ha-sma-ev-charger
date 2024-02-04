@@ -10,8 +10,6 @@ from homeassistant.core import HomeAssistant
 from custom_components import smaev
 from custom_components.smaev.config_flow import SmaEvChargerConfigFlow, validate_input
 
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-
 from .conftest import CONFIG_DATA
 
 
@@ -42,16 +40,8 @@ async def test_step_user(hass, device_info):
         assert result["data"] == CONFIG_DATA
 
 
-async def test_step_user_existing_host(hass, device_info):
+async def test_step_user_existing_host(hass, entry, device_info):
     """Test for user defined host already exists."""
-    entry = MockConfigEntry(
-        domain=smaev.DOMAIN,
-        title=CONFIG_DATA[CONF_HOST],
-        unique_id="1234567890",
-        data=CONFIG_DATA,
-        options={},
-    )
-
     entry.add_to_hass(hass)
 
     with (
@@ -87,16 +77,8 @@ async def test_step_user_error(hass, error, errors):
         assert result["errors"] == errors
 
 
-async def test_options_flow(hass, device_info):
+async def test_options_flow(hass, entry, device_info):
     """Test config flow options."""
-    entry = MockConfigEntry(
-        domain=smaev.DOMAIN,
-        title=CONFIG_DATA[CONF_HOST],
-        unique_id="1234567890",
-        data=CONFIG_DATA,
-        options={},
-    )
-
     entry.add_to_hass(hass)
     result = await hass.config_entries.options.async_init(entry.entry_id)
 
@@ -125,16 +107,8 @@ async def test_options_flow(hass, device_info):
         (Exception, {CONF_BASE: "unknown"}),
     ],
 )
-async def test_options_flow_errors(hass, error, errors):
+async def test_options_flow_errors(hass, entry, error, errors):
     """Test config flow options."""
-    entry = MockConfigEntry(
-        domain=smaev.DOMAIN,
-        title=CONFIG_DATA[CONF_HOST],
-        unique_id="1234567890",
-        data=CONFIG_DATA,
-        options={},
-    )
-
     entry.add_to_hass(hass)
     result = await hass.config_entries.options.async_init(entry.entry_id)
 

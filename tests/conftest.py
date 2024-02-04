@@ -3,6 +3,8 @@ import os
 import sys
 
 import pytest
+from homeassistant.const import CONF_HOST
+from custom_components import smaev
 
 # Tests in the dev enviromentment use the pytest_homeassistant_custom_component instead of
 # a cloned HA core repo for a simple and clean structure. To still test against a HA core
@@ -12,6 +14,8 @@ if "HA_CLONE" in os.environ:
     # Rewire the testing package to the cloned test modules. See the test `Dockerfile`
     # for setup details.
     sys.modules["pytest_homeassistant_custom_component"] = __import__("tests")
+
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 
 @pytest.fixture(autouse=True)
@@ -27,6 +31,19 @@ CONFIG_DATA = {
     "ssl": True,
     "verify_ssl": False,
 }
+
+
+@pytest.fixture(name="entry")
+def create_entry():
+    """Return mock entry."""
+    entry = MockConfigEntry(
+        domain=smaev.DOMAIN,
+        title=CONFIG_DATA[CONF_HOST],
+        unique_id="1234567890",
+        data=CONFIG_DATA,
+        options={},
+    )
+    return entry
 
 
 @pytest.fixture(name="device_info")
