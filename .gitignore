@@ -27,9 +27,6 @@ lib64
 .project
 .pydevproject
 
-# Visual Studio Code
-.vscode
-
 # Testing
 .tox
 .coverage
@@ -49,3 +46,7 @@ desktop.ini
 # other
 sandbox
 example.py
+
+# Home Assistant configuration
+config/*
+!config/configuration.yaml

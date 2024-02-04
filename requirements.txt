@@ -1,0 +1,9 @@
+pre-commit==3.5.0
+black==23.3.0
+ruff==0.1.6
+homeassistant==2024.1.5
+# Install HA and test dependencies (pytest, coverage)
+# To pin the dev container to a specific HA version, set this dependency
+# to the adequate version (add `==<version>`) and rebuild the dev container.
+# See https://github.com/MatthewFlamm/pytest-homeassistant-custom-component/releases for version mappings.
+pytest-homeassistant-custom-component==0.13.91
