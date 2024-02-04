@@ -99,11 +99,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        evcharger_data = hass.data[DOMAIN].pop(entry.entry_id)
-        await evcharger_data[SMAEV_OBJECT].close()
 
-    if not hass.data[DOMAIN]:
-        async_unload_services(hass)
+    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+        evcharger = hass.data[DOMAIN][entry.entry_id][SMAEV_OBJECT]
+        await evcharger.close()
+
+        hass.data[DOMAIN].pop(entry.entry_id)
+
+    async_unload_services(hass)
 
     return unload_ok
