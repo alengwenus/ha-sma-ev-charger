@@ -9,14 +9,7 @@ from custom_components import smaev
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-
-CONFIG_DATA = {
-    "host": "192.168.2.100",
-    "username": "Test",
-    "password": "Tester1234&",
-    "ssl": True,
-    "verify_ssl": False,
-}
+from .conftest import CONFIG_DATA
 
 
 async def test_async_setup_entry(hass: HomeAssistant, device_info) -> None:

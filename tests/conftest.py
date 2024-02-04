@@ -20,6 +20,15 @@ def auto_enable_custom_integrations(enable_custom_integrations):
     yield
 
 
+CONFIG_DATA = {
+    "host": "192.168.2.100",
+    "username": "Test",
+    "password": "Tester1234&",
+    "ssl": True,
+    "verify_ssl": False,
+}
+
+
 @pytest.fixture(name="device_info")
 def device_info():
     """Return device info."""
