@@ -10,6 +10,7 @@ from pysmaev.exceptions import SmaEvChargerChannelError
 from pysmaev.helpers import get_measurements_channel, get_parameters_channel
 
 from homeassistant.components.sensor import (
+    ENTITY_ID_FORMAT,
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
@@ -26,6 +27,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
@@ -241,6 +243,9 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self.hass = hass
         self.entity_description = entity_description
+        self.entity_id = async_generate_entity_id(
+            ENTITY_ID_FORMAT, entity_description.key, hass=hass
+        )
 
         self._attr_device_info = device_info
         self._attr_unique_id = f"{config_entry.unique_id}-{self.entity_description.key}"
