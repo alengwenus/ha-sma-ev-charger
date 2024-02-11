@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
 import logging
 from typing import TYPE_CHECKING
 
@@ -25,7 +24,6 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
@@ -124,11 +122,10 @@ async def async_setup_entry(
         assert config_entry.unique_id
 
     entities = []
-
     for entity_description in NUMBER_DESCRIPTIONS:
         entities.append(
             SmaEvChargerNumber(
-                coordinator, config_entry.unique_id, device_info, entity_description
+                hass, coordinator, config_entry, device_info, entity_description
             )
         )
 
@@ -143,17 +140,20 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
 
     def __init__(
         self,
+        hass: HomeAssistant,
         coordinator: DataUpdateCoordinator,
-        config_entry_unique_id: str,
+        config_entry: ConfigEntry,
         device_info: DeviceInfo,
         entity_desscription: SmaEvChargerNumberEntityDescription,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
+        self.hass = hass
+        self.config_entry = config_entry
         self.entity_description = entity_desscription
 
         self._attr_device_info = device_info
-        self._attr_unique_id = f"{config_entry_unique_id}-{self.entity_description.key}"
+        self._attr_unique_id = f"{config_entry.unique_id}-{self.entity_description.key}"
         self._attr_native_min_value = SMAEV_DEFAULT_MIN
         self._attr_native_max_value = SMAEV_DEFAULT_MAX
 
@@ -181,12 +181,12 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
         ):
             self._attr_native_min_value = min_value
             self._attr_native_max_value = max_value
-            async_call_later(self.hass, 0, self.force_refresh)
+            self.hass.async_create_task(self.force_refresh())
         else:
             self._attr_native_value = value
         super()._handle_coordinator_update()
 
-    def force_refresh(self, _: datetime):
+    async def force_refresh(self):
         """Call coordinator update handle."""
         self._handle_coordinator_update()
 

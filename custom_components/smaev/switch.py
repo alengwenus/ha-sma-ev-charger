@@ -86,7 +86,7 @@ async def async_setup_entry(
     for entity_description in SWITCH_DESCRIPTIONS:
         entities.append(
             SmaEvChargerSwitch(
-                coordinator, config_entry.unique_id, device_info, entity_description
+                hass, coordinator, config_entry, device_info, entity_description
             )
         )
 
@@ -101,17 +101,19 @@ class SmaEvChargerSwitch(CoordinatorEntity, SwitchEntity):
 
     def __init__(
         self,
+        hass: HomeAssistant,
         coordinator: DataUpdateCoordinator,
-        config_entry_unique_id: str,
+        config_entry: ConfigEntry,
         device_info: DeviceInfo,
         entity_description: SmaEvChargerSwitchEntityDescription,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
+        self.hass = hass
         self.entity_description = entity_description
 
         self._attr_device_info = device_info
-        self._attr_unique_id = f"{config_entry_unique_id}-{self.entity_description.key}"
+        self._attr_unique_id = f"{config_entry.unique_id}-{self.entity_description.key}"
         self._attr_current_option = None
 
         self.inv_value_mapping = {

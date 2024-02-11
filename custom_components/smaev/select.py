@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime
 import logging
 from typing import TYPE_CHECKING
 
@@ -16,7 +15,6 @@ from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
@@ -92,7 +90,7 @@ async def async_setup_entry(
     for entity_description in SELECT_DESCRIPTIONS:
         entities.append(
             SmaEvChargerSelect(
-                coordinator, config_entry.unique_id, device_info, entity_description
+                hass, coordinator, config_entry, device_info, entity_description
             )
         )
 
@@ -107,17 +105,20 @@ class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
 
     def __init__(
         self,
+        hass: HomeAssistant,
         coordinator: DataUpdateCoordinator,
-        config_entry_unique_id: str,
+        config_entry: ConfigEntry,
         device_info: DeviceInfo,
         entity_description: SmaEvChargerSelectEntityDescription,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
+        self.hass = (hass,)
+        self.config_entry = config_entry
         self.entity_description = entity_description
 
         self._attr_device_info = device_info
-        self._attr_unique_id = f"{config_entry_unique_id}-{self.entity_description.key}"
+        self._attr_unique_id = f"{config_entry.unique_id}-{self.entity_description.key}"
         self._attr_options = []
         self._attr_current_option = None
 
@@ -144,12 +145,12 @@ class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
         ]
         if options != self._attr_options:
             self._attr_options = options
-            async_call_later(self.hass, 0, self.force_refresh)
+            self.hass.async_create_task(self.force_refresh())
         else:
             self._attr_current_option = self.entity_description.value_mapping[value]
         super()._handle_coordinator_update()
 
-    def force_refresh(self, _: datetime):
+    async def force_refresh(self):
         """Call coordinator update handle."""
         self._handle_coordinator_update()
 
