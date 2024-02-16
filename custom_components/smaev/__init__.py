@@ -115,6 +115,7 @@ def generate_smaev_entity_id(
     config_entry,
     entity_id_format: str,
     entity_description: EntityDescription,
+    suffix: bool = True,
 ):
     """Generate a common formatted entity_id for SMA EV Charger entities."""
     device_info = hass.data[DOMAIN][config_entry.entry_id][SMAEV_DEVICE_INFO]
@@ -130,5 +131,6 @@ def generate_smaev_entity_id(
                 entity_description.key,
             ]
         ),
+        current_ids=None if suffix else [],
         hass=hass,
     )
