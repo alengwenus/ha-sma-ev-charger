@@ -18,13 +18,13 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
 
+from . import generate_smaev_entity_id
 from .const import (
     DOMAIN,
     SMAEV_COORDINATOR,
@@ -116,8 +116,8 @@ class SmaEvChargerSwitch(CoordinatorEntity, SwitchEntity):
         super().__init__(coordinator)
         self.hass = hass
         self.entity_description = entity_description
-        self.entity_id = async_generate_entity_id(
-            ENTITY_ID_FORMAT, entity_description.key, hass=hass
+        self.entity_id = generate_smaev_entity_id(
+            hass, config_entry, ENTITY_ID_FORMAT, entity_description
         )
 
         self._attr_device_info = device_info
