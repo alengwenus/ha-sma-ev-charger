@@ -5,11 +5,8 @@ from collections.abc import Mapping
 import logging
 from typing import Any
 
-from pysmaev.core import SmaEvCharger
-from pysmaev.exceptions import (
-    SmaEvChargerAuthenticationError,
-    SmaEvChargerConnectionError,
-)
+import pysmaev.core
+import pysmaev.exceptions
 
 import voluptuous as vol
 
@@ -49,15 +46,17 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 
     protocol = "https" if data[CONF_SSL] else "http"
     url = f"{protocol}://{data[CONF_HOST]}"
-    evcharger = SmaEvCharger(session, url, data[CONF_USERNAME], data[CONF_PASSWORD])
+    evcharger = pysmaev.core.SmaEvCharger(
+        session, url, data[CONF_USERNAME], data[CONF_PASSWORD]
+    )
 
     errors: dict[str, str] = {}
     device_info: dict[str, str] = {}
     try:
         await evcharger.open()
-    except SmaEvChargerConnectionError:
+    except pysmaev.exceptions.SmaEvChargerConnectionError:
         errors[CONF_BASE] = "cannot_connect"
-    except SmaEvChargerAuthenticationError:
+    except pysmaev.exceptions.SmaEvChargerAuthenticationError:
         errors[CONF_BASE] = "invalid_auth"
     except Exception:  # pylint: disable=broad-except
         _LOGGER.exception("Unexpected exception")
