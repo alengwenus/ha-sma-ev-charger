@@ -4,11 +4,8 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from pysmaev.core import SmaEvCharger
-from pysmaev.exceptions import (
-    SmaEvChargerAuthenticationError,
-    SmaEvChargerConnectionError,
-)
+import pysmaev.core
+import pysmaev.exceptions
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -57,16 +54,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     url = f"{protocol}://{entry.data[CONF_HOST]}"
 
     session = async_get_clientsession(hass, verify_ssl=entry.data[CONF_VERIFY_SSL])
-    evcharger = SmaEvCharger(
+    evcharger = pysmaev.core.SmaEvCharger(
         session, url, entry.data[CONF_USERNAME], entry.data[CONF_PASSWORD]
     )
 
     try:
         await evcharger.open()
         smaev_device_info = await evcharger.device_info()
-    except SmaEvChargerConnectionError as exc:
+    except pysmaev.exceptions.SmaEvChargerConnectionError as exc:
         raise ConfigEntryNotReady from exc
-    except SmaEvChargerAuthenticationError as exc:
+    except pysmaev.exceptions.SmaEvChargerAuthenticationError as exc:
         raise ConfigEntryAuthFailed from exc
 
     if TYPE_CHECKING:
