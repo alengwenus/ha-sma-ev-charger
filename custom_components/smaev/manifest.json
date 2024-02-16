@@ -1,13 +1,17 @@
 {
   "domain": "smaev",
   "name": "SMA EV Charger",
-  "codeowners": ["@alengwenus"],
+  "codeowners": [
+    "@alengwenus"
+  ],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/alengwenus/ha-sma-ev-charger",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/alengwenus/ha-sma-ev-charger/issues",
-  "requirements": ["pysmaev==0.1.6"],
+  "requirements": [
+    "pysmaev==0.1.7"
+  ],
   "ssdp": [],
   "version": "1.0.13",
   "zeroconf": []
