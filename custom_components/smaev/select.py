@@ -9,7 +9,11 @@ from pysmaev.const import SmaEvChargerParameters
 from pysmaev.exceptions import SmaEvChargerChannelError
 from pysmaev.helpers import get_parameters_channel
 
-from homeassistant.components.select import SelectEntity, SelectEntityDescription
+from homeassistant.components.select import (
+    ENTITY_ID_FORMAT,
+    SelectEntity,
+    SelectEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
@@ -20,6 +24,7 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
 )
 
+from . import generate_smaev_entity_id
 from .const import (
     DOMAIN,
     SMAEV_COORDINATOR,
@@ -116,6 +121,9 @@ class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
         self.hass = (hass,)
         self.config_entry = config_entry
         self.entity_description = entity_description
+        self.entity_id = generate_smaev_entity_id(
+            hass, config_entry, ENTITY_ID_FORMAT, entity_description
+        )
 
         self._attr_device_info = device_info
         self._attr_unique_id = f"{config_entry.unique_id}-{self.entity_description.key}"

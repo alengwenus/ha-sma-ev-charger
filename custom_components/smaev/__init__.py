@@ -22,6 +22,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.entity import async_generate_entity_id, EntityDescription
 from homeassistant.helpers.device_registry import DeviceInfo
 
 
@@ -107,3 +108,29 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         async_unload_services(hass)
 
     return unload_ok
+
+
+def generate_smaev_entity_id(
+    hass: HomeAssistant,
+    config_entry,
+    entity_id_format: str,
+    entity_description: EntityDescription,
+    suffix: bool = True,
+):
+    """Generate a common formatted entity_id for SMA EV Charger entities."""
+    device_info = hass.data[DOMAIN][config_entry.entry_id][SMAEV_DEVICE_INFO]
+    return async_generate_entity_id(
+        entity_id_format,
+        "_".join(
+            [
+                *(
+                    elem
+                    for identifier in device_info["identifiers"]
+                    for elem in identifier
+                ),
+                entity_description.key,
+            ]
+        ),
+        current_ids=None if suffix else [],
+        hass=hass,
+    )
