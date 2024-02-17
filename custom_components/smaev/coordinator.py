@@ -1,24 +1,22 @@
 """DataUpdateCoordinator for the SMA EV Charger integration."""
-from datetime import timedelta
 import logging
-
-from pysmaev.core import SmaEvCharger
-from pysmaev.exceptions import SmaEvChargerConnectionError, SmaEvChargerException
+from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from pysmaev.core import SmaEvCharger
+from pysmaev.exceptions import SmaEvChargerConnectionError, SmaEvChargerException
 
 from .const import (
-    DOMAIN,
     DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
+    SMAEV_COORDINATOR,
     SMAEV_MEASUREMENT,
     SMAEV_PARAMETER,
-    SMAEV_COORDINATOR,
 )
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -41,8 +39,8 @@ class SmaEvChargerCoordinator(DataUpdateCoordinator):
         if self.evcharger.is_closed:
             try:
                 await self.evcharger.open()
-            except SmaEvChargerException:
-                raise UpdateFailed("Connection to device lost.")
+            except SmaEvChargerException as exc:
+                raise UpdateFailed("Connection to device lost.") from exc
 
         data = {}
         try:

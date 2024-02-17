@@ -1,19 +1,17 @@
 """Tests for the SMA EV Charger config flow."""
 from unittest.mock import patch
 
-import pytest
-
 import pysmaev.core
 import pysmaev.exceptions
-
+import pytest
 from homeassistant import config_entries, data_entry_flow
-from homeassistant.const import CONF_HOST, CONF_BASE
+from homeassistant.const import CONF_BASE, CONF_HOST
 from homeassistant.core import HomeAssistant
 
 from custom_components import smaev
 from custom_components.smaev.config_flow import SmaEvChargerConfigFlow, validate_input
 
-from .conftest import CONFIG_DATA, MockSmaEvCharger, DEVICE_INFO
+from .conftest import CONFIG_DATA, DEVICE_INFO, MockSmaEvCharger
 
 
 async def test_show_form(hass: HomeAssistant) -> None:

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import voluptuous as vol
-
 from homeassistant.const import (
     ATTR_DEVICE_ID,
     CONF_DEVICE_ID,
@@ -10,7 +9,8 @@ from homeassistant.const import (
     CONF_TYPE,
 )
 from homeassistant.core import Context, HomeAssistant
-from homeassistant.helpers import config_validation as cv, device_registry as dr
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry as dr
 
 from . import DOMAIN
 from .const import SERVICE_RESTART

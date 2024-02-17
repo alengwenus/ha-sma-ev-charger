@@ -1,13 +1,9 @@
 """Sensor platform for SMA EV Charger integration."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import logging
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
-
-from pysmaev.const import SmaEvChargerMeasurements
-from pysmaev.exceptions import SmaEvChargerChannelError
-from pysmaev.helpers import get_measurements_channel, get_parameters_channel
 
 from homeassistant.components.sensor import (
     ENTITY_ID_FORMAT,
@@ -32,10 +28,13 @@ from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
+from pysmaev.const import SmaEvChargerMeasurements
+from pysmaev.helpers import get_measurements_channel, get_parameters_channel
 
 from . import generate_smaev_entity_id
 from .const import (
     DOMAIN,
+    SMAEV_CHANNELS,
     SMAEV_COORDINATOR,
     SMAEV_DEVICE_INFO,
     SMAEV_MEASUREMENT,
@@ -216,11 +215,17 @@ async def async_setup_entry(
     entities = []
 
     for entity_description in SENSOR_DESCRIPTIONS:
-        entities.append(
-            SmaEvChargerSensor(
-                hass, coordinator, config_entry, device_info, entity_description
+        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+            entities.append(
+                SmaEvChargerSensor(
+                    hass, coordinator, config_entry, device_info, entity_description
+                )
             )
-        )
+        else:
+            _LOGGER.warning(
+                "Channel '%s' is not accessible. Elevated rights might be required.",
+                entity_description.channel,
+            )
 
     async_add_entities(entities)
 
@@ -253,21 +258,18 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        try:
-            if self.entity_description.type == SMAEV_MEASUREMENT:
-                channel = get_measurements_channel(
-                    self.coordinator.data[SMAEV_MEASUREMENT],
-                    self.entity_description.channel,
-                )
-                value = channel[0][SMAEV_VALUE]
-            else:  # SMAEV_PARAMETER
-                channel = get_parameters_channel(
-                    self.coordinator.data[SMAEV_PARAMETER],
-                    self.entity_description.channel,
-                )
-                value = channel[SMAEV_VALUE]
-        except SmaEvChargerChannelError:
-            return
+        if self.entity_description.type == SMAEV_MEASUREMENT:
+            channel = get_measurements_channel(
+                self.coordinator.data[SMAEV_MEASUREMENT],
+                self.entity_description.channel,
+            )
+            value = channel[0][SMAEV_VALUE]
+        else:  # SMAEV_PARAMETER
+            channel = get_parameters_channel(
+                self.coordinator.data[SMAEV_PARAMETER],
+                self.entity_description.channel,
+            )
+            value = channel[SMAEV_VALUE]
 
         value = self.entity_description.value_mapping.get(value, value)
 

@@ -1,15 +1,14 @@
 """Test init of SMA EV Charger integration."""
-import pytest
 from unittest.mock import patch
 
 import pysmaev.core
 import pysmaev.exceptions
-
-from homeassistant.core import HomeAssistant
+import pytest
 from homeassistant.config_entries import ConfigEntryState
-from custom_components import smaev
-
+from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from custom_components import smaev
 
 from .conftest import CONFIG_DATA, MockSmaEvCharger
 

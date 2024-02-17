@@ -2,7 +2,6 @@
 from unittest.mock import patch
 
 import pysmaev.core
-
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 

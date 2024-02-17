@@ -1,12 +1,10 @@
 """DateTime platform for SMA EV Charger integration."""
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime
-import logging
 from typing import TYPE_CHECKING
-
-from pysmaev.helpers import get_parameters_channel
 
 from homeassistant.components.datetime import (
     ENTITY_ID_FORMAT,
@@ -21,10 +19,12 @@ from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
+from pysmaev.helpers import get_parameters_channel
 
 from . import generate_smaev_entity_id
 from .const import (
     DOMAIN,
+    SMAEV_CHANNELS,
     SMAEV_COORDINATOR,
     SMAEV_DEVICE_INFO,
     SMAEV_PARAMETER,
@@ -70,11 +70,17 @@ async def async_setup_entry(
     entities = []
 
     for entity_description in DATETIME_DESCRIPTIONS:
-        entities.append(
-            SmaEvChargerDateTime(
-                hass, coordinator, config_entry, device_info, entity_description
+        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+            entities.append(
+                SmaEvChargerDateTime(
+                    hass, coordinator, config_entry, device_info, entity_description
+                )
             )
-        )
+        else:
+            _LOGGER.warning(
+                "Channel '%s' is not accessible. Elevated rights might be required.",
+                entity_description.channel,
+            )
 
     async_add_entities(entities)
 

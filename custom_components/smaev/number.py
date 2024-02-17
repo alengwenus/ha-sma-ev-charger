@@ -1,12 +1,9 @@
 """Number platform for SMA EV Charger integration."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
-
-from pysmaev.exceptions import SmaEvChargerChannelError
-from pysmaev.helpers import get_parameters_channel
 
 from homeassistant.components.number import (
     ENTITY_ID_FORMAT,
@@ -17,10 +14,10 @@ from homeassistant.components.number import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     EntityCategory,
-    UnitOfEnergy,
-    UnitOfTime,
     UnitOfElectricCurrent,
+    UnitOfEnergy,
     UnitOfPower,
+    UnitOfTime,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -29,10 +26,12 @@ from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
+from pysmaev.helpers import get_parameters_channel
 
 from . import generate_smaev_entity_id
 from .const import (
     DOMAIN,
+    SMAEV_CHANNELS,
     SMAEV_COORDINATOR,
     SMAEV_DEFAULT_MAX,
     SMAEV_DEFAULT_MIN,
@@ -125,11 +124,17 @@ async def async_setup_entry(
 
     entities = []
     for entity_description in NUMBER_DESCRIPTIONS:
-        entities.append(
-            SmaEvChargerNumber(
-                hass, coordinator, config_entry, device_info, entity_description
+        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+            entities.append(
+                SmaEvChargerNumber(
+                    hass, coordinator, config_entry, device_info, entity_description
+                )
             )
-        )
+        else:
+            _LOGGER.warning(
+                "Channel '%s' is not accessible. Elevated rights might be required.",
+                entity_description.channel,
+            )
 
     async_add_entities(entities)
 
@@ -165,13 +170,10 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        try:
-            channel = get_parameters_channel(
-                self.coordinator.data[SMAEV_PARAMETER],
-                self.entity_description.channel,
-            )
-        except SmaEvChargerChannelError:
-            return
+        channel = get_parameters_channel(
+            self.coordinator.data[SMAEV_PARAMETER],
+            self.entity_description.channel,
+        )
 
         min_value = channel.get(SMAEV_MIN_VALUE)
         max_value = channel.get(SMAEV_MAX_VALUE)

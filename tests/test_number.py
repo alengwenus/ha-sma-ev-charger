@@ -2,12 +2,11 @@
 from unittest.mock import patch
 
 import pysmaev.core
-
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 
 from custom_components.smaev import generate_smaev_entity_id
-from custom_components.smaev.number import NUMBER_DESCRIPTIONS, ENTITY_ID_FORMAT
+from custom_components.smaev.number import ENTITY_ID_FORMAT, NUMBER_DESCRIPTIONS
 
 from .conftest import MockSmaEvCharger
 

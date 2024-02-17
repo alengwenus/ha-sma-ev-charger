@@ -1,13 +1,9 @@
 """Select platform for SMA EV Charger integration."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import logging
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
-
-from pysmaev.const import SmaEvChargerParameters
-from pysmaev.exceptions import SmaEvChargerChannelError
-from pysmaev.helpers import get_parameters_channel
 
 from homeassistant.components.select import (
     ENTITY_ID_FORMAT,
@@ -23,10 +19,13 @@ from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
+from pysmaev.const import SmaEvChargerParameters
+from pysmaev.helpers import get_parameters_channel
 
 from . import generate_smaev_entity_id
 from .const import (
     DOMAIN,
+    SMAEV_CHANNELS,
     SMAEV_COORDINATOR,
     SMAEV_DEVICE_INFO,
     SMAEV_PARAMETER,
@@ -93,11 +92,17 @@ async def async_setup_entry(
     entities = []
 
     for entity_description in SELECT_DESCRIPTIONS:
-        entities.append(
-            SmaEvChargerSelect(
-                hass, coordinator, config_entry, device_info, entity_description
+        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+            entities.append(
+                SmaEvChargerSelect(
+                    hass, coordinator, config_entry, device_info, entity_description
+                )
             )
-        )
+        else:
+            _LOGGER.warning(
+                "Channel '%s' is not accessible. Elevated rights might be required.",
+                entity_description.channel,
+            )
 
     async_add_entities(entities)
 
@@ -137,13 +142,10 @@ class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        try:
-            channel = get_parameters_channel(
-                self.coordinator.data[SMAEV_PARAMETER],
-                self.entity_description.channel,
-            )
-        except SmaEvChargerChannelError:
-            return
+        channel = get_parameters_channel(
+            self.coordinator.data[SMAEV_PARAMETER],
+            self.entity_description.channel,
+        )
 
         possible_values = channel[SMAEV_POSSIBLE_VALUES]
         value = channel[SMAEV_VALUE]

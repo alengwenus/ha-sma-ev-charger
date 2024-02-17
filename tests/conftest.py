@@ -1,14 +1,15 @@
 """Fixtures for testing."""
+import json
 import os
 import sys
-
+from pathlib import Path
 from unittest.mock import AsyncMock
 
+import pysmaev.core
 import pytest
 from homeassistant.const import CONF_HOST
-from custom_components import smaev
 
-from pysmaev.core import SmaEvCharger
+from custom_components import smaev
 
 # Tests in the dev enviromentment use the pytest_homeassistant_custom_component instead of
 # a cloned HA core repo for a simple and clean structure. To still test against a HA core
@@ -46,12 +47,20 @@ DEVICE_INFO = {
 }
 
 
-class MockSmaEvCharger(SmaEvCharger):
+MEASUREMENTS = json.loads(
+    (Path(__file__).parent / Path("fixtures/measurements.json")).read_text()
+)
+PARAMETERS = json.loads(
+    (Path(__file__).parent / Path("fixtures/parameters.json")).read_text()
+)
+
+
+class MockSmaEvCharger(pysmaev.core.SmaEvCharger):
     """Mocked SmaEvCharger."""
 
     open = AsyncMock()
-    request_measurements = AsyncMock()
-    request_parameters = AsyncMock()
+    request_measurements = AsyncMock(return_value=MEASUREMENTS)
+    request_parameters = AsyncMock(return_value=PARAMETERS)
 
     device_info = AsyncMock(return_value=DEVICE_INFO)
 
