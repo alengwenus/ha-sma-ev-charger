@@ -1,16 +1,14 @@
 """Fixtures for testing."""
+import json
 import os
 import sys
-import json
-
 from unittest.mock import AsyncMock
 
+import pysmaev.core
 import pytest
 from homeassistant.const import CONF_HOST
+
 from custom_components import smaev
-
-import pysmaev.core
-
 
 # Tests in the dev enviromentment use the pytest_homeassistant_custom_component instead of
 # a cloned HA core repo for a simple and clean structure. To still test against a HA core
@@ -21,7 +19,7 @@ if "HA_CLONE" in os.environ:
     # for setup details.
     sys.modules["pytest_homeassistant_custom_component"] = __import__("tests")
 
-from pytest_homeassistant_custom_component.common import load_fixture, MockConfigEntry
+from pytest_homeassistant_custom_component.common import MockConfigEntry, load_fixture
 
 
 @pytest.fixture(autouse=True)

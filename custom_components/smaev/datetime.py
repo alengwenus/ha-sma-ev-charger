@@ -1,12 +1,10 @@
 """DateTime platform for SMA EV Charger integration."""
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime
-import logging
 from typing import TYPE_CHECKING
-
-from pysmaev.helpers import get_parameters_channel
 
 from homeassistant.components.datetime import (
     ENTITY_ID_FORMAT,
@@ -21,6 +19,7 @@ from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
+from pysmaev.helpers import get_parameters_channel
 
 from . import generate_smaev_entity_id
 from .const import (
