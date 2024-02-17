@@ -1,0 +1,566 @@
+[
+    {
+        "componentId": "IGULD:SELF",
+        "values": [
+            {
+                "channelId": "Parameter.Nameplate.CmpMain.HwRev",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.082Z",
+                "value": "R5"
+            },
+            {
+                "channelId": "Parameter.Nameplate.Model",
+                "editable": false,
+                "possibleValues": [
+                    "9484"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.067Z",
+                "value": "9484"
+            },
+            {
+                "channelId": "Parameter.Nameplate.CmpMain.SusyId",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.485Z",
+                "value": "424"
+            },
+            {
+                "channelId": "Parameter.Wl.DoWPS",
+                "editable": true,
+                "possibleValues": [
+                    "3321",
+                    "302"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:47.551Z",
+                "value": "302"
+            },
+            {
+                "channelId": "Parameter.Chrg.Plan.En",
+                "editable": true,
+                "state": "Confirmed",
+                "timestamp": "2024-02-16T21:25:27.987Z",
+                "value": "0"
+            },
+            {
+                "channelId": "Parameter.Nameplate.MainModel",
+                "editable": false,
+                "possibleValues": [
+                    "8008"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.077Z",
+                "value": "8008"
+            },
+            {
+                "channelId": "Parameter.PCC.ARtg",
+                "editable": true,
+                "max": 1000,
+                "min": 16,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.485Z",
+                "value": "32.00"
+            },
+            {
+                "channelId": "Parameter.Wl.Sec.Psk",
+                "editable": true,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:47.400Z",
+                "value": "****"
+            },
+            {
+                "channelId": "Parameter.Spdwr.AutoCfgIsOn",
+                "editable": true,
+                "possibleValues": [
+                    "1129"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "1129"
+            },
+            {
+                "channelId": "Parameter.Nameplate.SerNum",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.064Z",
+                "value": "1234567890"
+            },
+            {
+                "channelId": "Parameter.Spdwr.ActlSnetMsk",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "255.255.255.0"
+            },
+            {
+                "channelId": "Parameter.Upd.AutoUpdIsOn",
+                "editable": true,
+                "possibleValues": [
+                    "1129",
+                    "1130"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:48.088Z",
+                "value": "1129"
+            },
+            {
+                "channelId": "Parameter.Nameplate.ChrgCtrl.SusyId",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:44.351Z",
+                "value": "428"
+            },
+            {
+                "channelId": "Parameter.Inverter.AcALim",
+                "editable": true,
+                "max": 32,
+                "min": 6,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.485Z",
+                "value": "16.000"
+            },
+            {
+                "channelId": "Parameter.Wl.ActlIp",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "192.168.1.100"
+            },
+            {
+                "channelId": "Parameter.Chrg.ActChaMod",
+                "editable": true,
+                "possibleValues": [
+                    "4718",
+                    "4721"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2024-02-16T21:25:27.990Z",
+                "value": "4721"
+            },
+            {
+                "channelId": "Parameter.Wl.ActlSnetMsk",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "255.255.0.0"
+            },
+            {
+                "channelId": "Parameter.Nameplate.CmpMain.Rev",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.084Z",
+                "value": "0"
+            },
+            {
+                "channelId": "Parameter.Spdwr.ActlIp",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "192.168.1.100"
+            },
+            {
+                "channelId": "Parameter.Nameplate.CmpMain.SerNum",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:43.523Z",
+                "value": "1234567890"
+            },
+            {
+                "channelId": "Parameter.Chrg.Plan.StopTm",
+                "editable": true,
+                "state": "Confirmed",
+                "timestamp": "2024-02-16T21:25:27Z",
+                "value": "1708118727"
+            },
+            {
+                "channelId": "Parameter.Nameplate.CmpOS.SwRev",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.080Z",
+                "value": "1.13.00.R"
+            },
+            {
+                "channelId": "Parameter.Inverter.WMaxIn",
+                "editable": true,
+                "max": 22000,
+                "min": 4500,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.484Z",
+                "value": "11000"
+            },
+            {
+                "channelId": "Parameter.PCC.WMaxAsym",
+                "editable": true,
+                "max": 10000,
+                "min": 0,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.484Z",
+                "value": "4600"
+            },
+            {
+                "channelId": "Parameter.Nameplate.ARtg",
+                "editable": false,
+                "max": 32,
+                "min": 32,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.485Z",
+                "value": "32.000"
+            },
+            {
+                "channelId": "Parameter.Inverter.WMax",
+                "editable": true,
+                "max": 22000,
+                "min": 4500,
+                "state": "Confirmed",
+                "timestamp": "2024-01-25T16:33:47.556Z",
+                "value": "11000"
+            },
+            {
+                "channelId": "Parameter.Nameplate.ChrgCtrl.SerNumTxt",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:53.604Z",
+                "value": "00000012345"
+            },
+            {
+                "channelId": "Parameter.Chrg.Plan.DurTmm",
+                "editable": true,
+                "state": "Confirmed",
+                "timestamp": "2024-02-16T21:25:27.987Z",
+                "value": "0"
+            },
+            {
+                "channelId": "Parameter.Chrg.ChrgLok",
+                "editable": true,
+                "possibleValues": [
+                    "1130",
+                    "1129"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-29T10:09:34.924Z",
+                "value": "1130"
+            },
+            {
+                "channelId": "Parameter.Wl.ActlDnsSrvIp",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "192.168.1.3"
+            },
+            {
+                "channelId": "Parameter.Nameplate.MacId",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:49.058Z",
+                "value": "00:15:BB:12:34:56"
+            },
+            {
+                "channelId": "Parameter.Nameplate.ChrgCtrl.SwRevTxt",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:54.551Z",
+                "value": "SA-01.03.27"
+            },
+            {
+                "channelId": "Parameter.Wl.Sec.Cry",
+                "editable": true,
+                "possibleValues": [
+                    "3323",
+                    "3324",
+                    "3398"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:47.402Z",
+                "value": "3398"
+            },
+            {
+                "channelId": "Parameter.Spdwr.IgmpQryTms",
+                "editable": true,
+                "max": 31744,
+                "min": 11,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:40.035Z",
+                "value": "125"
+            },
+            {
+                "channelId": "Parameter.Nameplate.Location",
+                "editable": true,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.063Z",
+                "value": "SMA EV Charger 22"
+            },
+            {
+                "channelId": "Parameter.Spdwr.ActlDnsSrvIp",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "192.168.1.1"
+            },
+            {
+                "channelId": "Parameter.Chrg.AMinCha",
+                "editable": true,
+                "max": 32,
+                "min": 6,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.485Z",
+                "value": "6.0"
+            },
+            {
+                "channelId": "Parameter.Inverter.OutPhs",
+                "editable": true,
+                "possibleValues": [
+                    "326",
+                    "5194",
+                    "5195"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.485Z",
+                "value": "326"
+            },
+            {
+                "channelId": "Parameter.Nameplate.PkgRev",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.064Z",
+                "value": "1.2.23.R"
+            },
+            {
+                "channelId": "Parameter.Wl.ActlGwIp",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "172.22.0.3"
+            },
+            {
+                "channelId": "Parameter.PCC.FlbInv.WMax",
+                "editable": true,
+                "max": 22000,
+                "min": 0,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.484Z",
+                "value": "11000"
+            },
+            {
+                "channelId": "Parameter.Inverter.WMaxInRtg",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.485Z",
+                "value": "22000"
+            },
+            {
+                "channelId": "Parameter.Sys.DevSigBri",
+                "editable": true,
+                "possibleValues": [
+                    "5191",
+                    "5190",
+                    "5173"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:41.670Z",
+                "value": "5190"
+            },
+            {
+                "channelId": "Parameter.SwCmp.CmpEnnexOS.Frwk.SwRev",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.065Z",
+                "value": "1.31.3.R"
+            },
+            {
+                "channelId": "Parameter.Nameplate.ChrgCtrl.ChrgTypTxt",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:44.353Z",
+                "value": "wallbe Smart Charge Control 2791.04"
+            },
+            {
+                "channelId": "Parameter.Nameplate.ModelStr",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.067Z",
+                "value": "EVC22-3AC-10"
+            },
+            {
+                "channelId": "Parameter.Spdwr.IgmpQryTx",
+                "editable": true,
+                "possibleValues": [
+                    "303",
+                    "4478",
+                    "4479"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:40.035Z",
+                "value": "4479"
+            },
+            {
+                "channelId": "Parameter.Spdwr.ActlGwIp",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "192.168.2.1"
+            },
+            {
+                "channelId": "Parameter.Chrg.UseEnergyMeter",
+                "editable": true,
+                "possibleValues": [
+                    "1129",
+                    "1130"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.485Z",
+                "value": "1129"
+            },
+            {
+                "channelId": "Parameter.Sys.DevRstr",
+                "editable": true,
+                "possibleValues": [
+                    "302",
+                    "1146"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:01.189Z",
+                "value": "302"
+            },
+            {
+                "channelId": "Parameter.GridGuard.Cntry.VRtg",
+                "editable": true,
+                "max": 260,
+                "min": 210,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.484Z",
+                "value": "230"
+            },
+            {
+                "channelId": "Parameter.Operation.ComTmOut",
+                "editable": true,
+                "max": 60000,
+                "min": 200,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.484Z",
+                "value": "5000"
+            },
+            {
+                "channelId": "Parameter.Wl.Sec.Ssid",
+                "editable": true,
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:47.397Z",
+                "value": ""
+            },
+            {
+                "channelId": "Parameter.Chrg.ChrgApv",
+                "editable": true,
+                "possibleValues": [
+                    "5171",
+                    "5172"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2024-02-16T18:49:32.159Z",
+                "value": "5171"
+            },
+            {
+                "channelId": "Parameter.Nameplate.WlMacId",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2024-01-29T22:42:10.517Z",
+                "value": "74:7A:90:12:34:56"
+            },
+            {
+                "channelId": "Parameter.Upd.AvalChkIstl",
+                "editable": true,
+                "possibleValues": [
+                    "302",
+                    "1146"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:59.700Z",
+                "value": "302"
+            },
+            {
+                "channelId": "Parameter.Nameplate.Vendor",
+                "editable": false,
+                "possibleValues": [
+                    "461"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:01:05.084Z",
+                "value": "461"
+            },
+            {
+                "channelId": "Parameter.Wl.IsOn",
+                "editable": true,
+                "possibleValues": [
+                    "1129",
+                    "1130"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:47.436Z",
+                "value": "1129"
+            },
+            {
+                "channelId": "Parameter.Chrg.StpWhenFl",
+                "editable": true,
+                "possibleValues": [
+                    "1129",
+                    "1130"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.484Z",
+                "value": "1129"
+            },
+            {
+                "channelId": "Parameter.Wl.AutoCfgIsOn",
+                "editable": true,
+                "possibleValues": [
+                    "1129"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-19T14:08:40.378Z",
+                "value": "1129"
+            },
+            {
+                "channelId": "Parameter.Chrg.StpWhenFlTm",
+                "editable": true,
+                "max": 1440,
+                "min": 5,
+                "state": "Confirmed",
+                "timestamp": "2023-12-27T09:52:12.484Z",
+                "value": "15"
+            },
+            {
+                "channelId": "Parameter.Wl.SoftAcsIsOn",
+                "editable": true,
+                "possibleValues": [
+                    "1129",
+                    "1130"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2023-12-05T19:00:47.461Z",
+                "value": "1129"
+            },
+            {
+                "channelId": "Parameter.Wl.DoAcq",
+                "editable": true,
+                "possibleValues": [
+                    "3342",
+                    "302"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2024-01-29T22:42:10.694Z",
+                "value": "302"
+            },
+            {
+                "channelId": "Parameter.Wl.ExsNetw[]",
+                "editable": false,
+                "state": "Confirmed",
+                "timestamp": "2024-01-29T22:42:10.675Z",
+                "values": [
+                    "Wifi1",
+                    "Wifi2",
+                    "Wifi3"
+                ]
+            }
+        ]
+    }
+]

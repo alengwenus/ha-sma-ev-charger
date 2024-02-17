@@ -7,3 +7,4 @@ homeassistant==2024.1.5
 # to the adequate version (add `==<version>`) and rebuild the dev container.
 # See https://github.com/MatthewFlamm/pytest-homeassistant-custom-component/releases for version mappings.
 pytest-homeassistant-custom-component==0.13.91
+pysmaev==0.1.7
