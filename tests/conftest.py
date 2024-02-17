@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+from pathlib import Path
 from unittest.mock import AsyncMock
 
 import pysmaev.core
@@ -19,7 +20,7 @@ if "HA_CLONE" in os.environ:
     # for setup details.
     sys.modules["pytest_homeassistant_custom_component"] = __import__("tests")
 
-from pytest_homeassistant_custom_component.common import MockConfigEntry, load_fixture
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 
 @pytest.fixture(autouse=True)
@@ -46,8 +47,12 @@ DEVICE_INFO = {
 }
 
 
-MEASUREMENTS = json.loads(load_fixture("measurements.json"))
-PARAMETERS = json.loads(load_fixture("parameters.json"))
+MEASUREMENTS = json.loads(
+    (Path(__file__).parent / Path("fixtures/measurements.json")).read_text()
+)
+PARAMETERS = json.loads(
+    (Path(__file__).parent / Path("fixtures/parameters.json")).read_text()
+)
 
 
 class MockSmaEvCharger(pysmaev.core.SmaEvCharger):
