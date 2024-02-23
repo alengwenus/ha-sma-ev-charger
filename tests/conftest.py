@@ -94,3 +94,16 @@ async def init_integration(hass, entry):
         assert await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         yield evcharger
+
+
+@pytest.fixture(name="channel_values")
+def get_channel_values():
+    """Get a dirctionary with the measurment and parameter channel values."""
+    channel_values = {}
+    for channel in MEASUREMENTS:
+        channel_values[channel["channelId"]] = channel["values"][0].get("value")
+
+    for channel in PARAMETERS[0]["values"]:
+        channel_values[channel["channelId"]] = channel.get("value")
+
+    return channel_values
