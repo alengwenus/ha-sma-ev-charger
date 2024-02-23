@@ -41,7 +41,7 @@ async def test_setup_smaev_sensor(hass: HomeAssistant, entry, evcharger) -> None
 async def test_entity_attributes(
     hass: HomeAssistant, entity_registry: er.EntityRegistry, entry, evcharger
 ) -> None:
-    """Test tje attributes of an entity."""
+    """Test the attributes of an entity."""
     for entity_id, description in entity_items(hass, entry):
         entity = entity_registry.async_get(entity_id)
         assert entity
