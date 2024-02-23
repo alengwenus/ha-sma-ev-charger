@@ -55,6 +55,23 @@ PARAMETERS = json.loads(
 )
 
 
+def get_entity_ids_and_descriptions(
+    hass, entry, entity_descriptions, entity_id_format
+) -> tuple:
+    """Return a list with (entity_id, entity_description)."""
+    items = [
+        (
+            smaev.generate_smaev_entity_id(
+                hass, entry, entity_id_format, description, suffix=False
+            ),
+            description,
+        )
+        for description in entity_descriptions
+        if description.entity_registry_enabled_default
+    ]
+    return items
+
+
 class MockSmaEvCharger(pysmaev.core.SmaEvCharger):
     """Mocked SmaEvCharger."""
 
