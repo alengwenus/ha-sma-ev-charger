@@ -3,7 +3,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import pysmaev.core
 import pytest
@@ -76,3 +76,21 @@ def create_entry():
         options={},
     )
     return entry
+
+
+@pytest.fixture(name="evcharger")
+async def init_integration(hass, entry):
+    """Set up the EV Charger integration in Home Assistant."""
+    evcharger = None
+
+    def evcharger_factory(*args, **kwargs):
+        nonlocal evcharger
+        evcharger = MockSmaEvCharger(*args, **kwargs)
+        return evcharger
+
+    entry.add_to_hass(hass)
+
+    with patch("pysmaev.core.SmaEvCharger", side_effect=evcharger_factory):
+        assert await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+        yield evcharger
