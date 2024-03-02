@@ -80,7 +80,7 @@ NUMBER_DESCRIPTIONS: tuple[SmaEvChargerNumberEntityDescription, ...] = (
         translation_key="energy_charge_session",
         type=SMAEV_PARAMETER,
         channel="Parameter.Chrg.Plan.En",
-        native_step=1,
+        native_step=0.1,
         mode=NumberMode.BOX,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         entity_registry_enabled_default=True,
@@ -90,7 +90,7 @@ NUMBER_DESCRIPTIONS: tuple[SmaEvChargerNumberEntityDescription, ...] = (
         translation_key="charge_current_limit",
         type=SMAEV_PARAMETER,
         channel="Parameter.Inverter.AcALim",
-        native_step=1,
+        native_step=0.001,
         mode=NumberMode.BOX,
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         entity_registry_enabled_default=False,
@@ -166,6 +166,7 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
         self._attr_unique_id = f"{config_entry.unique_id}-{self.entity_description.key}"
         self._attr_native_min_value = SMAEV_DEFAULT_MIN
         self._attr_native_max_value = SMAEV_DEFAULT_MAX
+        self._attr_native_step = entity_description.native_step
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -177,7 +178,9 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
 
         min_value = channel.get(SMAEV_MIN_VALUE)
         max_value = channel.get(SMAEV_MAX_VALUE)
-        value = int(float(channel[SMAEV_VALUE]))
+        value = float(channel[SMAEV_VALUE])
+        if self.native_step == 1:
+            value = int(value)
         if (
             (min_value is not None)
             and (max_value is not None)
@@ -199,6 +202,8 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
 
     async def async_set_native_value(self, value: float) -> None:
         """Update to the EV charger."""
+        if self.native_step == 1:
+            value = int(value)
         evcharger = self.coordinator.evcharger
-        await evcharger.set_parameter(f"{value:.0f}", self.entity_description.channel)
+        await evcharger.set_parameter(f"{value}", self.entity_description.channel)
         await self.coordinator.async_request_refresh()
