@@ -4,7 +4,7 @@ inputs:
   python-version:
     description: 'Python version'
     required: true
-    default: '3.11'
+    default: '3.12'
   core-version:
     description: 'Home Assistant core version'
     required: false
