@@ -15,8 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11"]
-        core-version: ["2023.9.0", "2024.1.5", "dev"]
+        python-version: ["3.12"]
+        core-version: ["2024.2.0", "2024.8.3", "dev"]
     steps:
       - name: Check out code from GitHub
         uses: actions/checkout@v3
