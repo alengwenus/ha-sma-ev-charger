@@ -6,6 +6,9 @@ This custom component integrates the SMA EV Charger into Home Assistant.
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
+<a href="https://www.buymeacoffee.com/alengwenus" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+
+
 ## Installation
 
 ### HACS - Home Assistant Community Store _(recommended)_
