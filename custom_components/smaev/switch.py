@@ -68,6 +68,17 @@ SWITCH_DESCRIPTIONS: tuple[SmaEvChargerSwitchEntityDescription, ...] = (
         entity_registry_enabled_default=True,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    SmaEvChargerSwitchEntityDescription(
+        key="lock_charging_cable",
+        translation_key="lock_charging_cable",
+        type=SMAEV_PARAMETER,
+        channel="Parameter.Chrg.CblLok",
+        value_mapping={
+            SmaEvChargerParameters.On: True,
+            SmaEvChargerParameters.Off: False,
+        },
+        entity_registry_enabled_default=True,
+    ),
 )
 
 
