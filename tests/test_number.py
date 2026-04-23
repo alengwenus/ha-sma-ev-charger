@@ -1,4 +1,5 @@
 """Test for the SMA EV Charger number platform."""
+
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_UNIT_OF_MEASUREMENT,

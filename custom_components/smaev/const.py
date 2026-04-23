@@ -1,4 +1,5 @@
 """Constants for the SMA EV Charger integration."""
+
 DOMAIN = "smaev"
 
 SMAEV_CHANNELS = "channels"

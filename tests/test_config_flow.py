@@ -1,4 +1,5 @@
 """Tests for the SMA EV Charger config flow."""
+
 from unittest.mock import patch
 
 import pysmaev.core

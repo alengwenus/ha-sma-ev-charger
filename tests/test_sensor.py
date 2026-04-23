@@ -1,4 +1,5 @@
 """Test for the SMA EV Charger sensor platform."""
+
 from datetime import timedelta
 
 from homeassistant.const import (

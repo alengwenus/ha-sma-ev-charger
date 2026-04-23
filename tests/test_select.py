@@ -1,4 +1,5 @@
 """Test for the SMA EV Charger select platform."""
+
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 

@@ -1,4 +1,5 @@
 """Test init of SMA EV Charger integration."""
+
 from unittest.mock import patch
 
 import pysmaev.core
