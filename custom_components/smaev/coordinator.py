@@ -2,6 +2,7 @@
 
 import logging
 from datetime import timedelta
+from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
@@ -25,6 +26,8 @@ _LOGGER = logging.getLogger(__name__)
 class SmaEvChargerCoordinator(DataUpdateCoordinator):
     """SmaEvCharger coordinator."""
 
+    evcharger: SmaEvCharger
+
     def __init__(
         self, hass: HomeAssistant, entry: ConfigEntry, evcharger: SmaEvCharger
     ) -> None:
@@ -35,7 +38,7 @@ class SmaEvChargerCoordinator(DataUpdateCoordinator):
         )
         self.evcharger = evcharger
 
-    async def _async_update_data(self):
+    async def _async_update_data(self) -> dict[Any, Any]:
         """Fetch data from SmaEvCharger."""
         if self.evcharger.is_closed:
             try:

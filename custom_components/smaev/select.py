@@ -4,46 +4,41 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 from homeassistant.components.select import (
     ENTITY_ID_FORMAT,
     SelectEntity,
     SelectEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
-    DataUpdateCoordinator,
 )
 from pysmaev.const import SmaEvChargerParameters
-from pysmaev.helpers import get_parameters_channel
+from pysmaev.helpers import PossibleValuesType, get_parameters_channel
 
-from . import generate_smaev_entity_id
+from . import SmaEvChargerConfigEntry, generate_smaev_entity_id
 from .const import (
-    DOMAIN,
-    SMAEV_CHANNELS,
-    SMAEV_COORDINATOR,
-    SMAEV_DEVICE_INFO,
     SMAEV_PARAMETER,
     SMAEV_POSSIBLE_VALUES,
     SMAEV_VALUE,
 )
+from .coordinator import SmaEvChargerCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(frozen=True)
 class SmaEvChargerSelectEntityDescription(SelectEntityDescription):
     """Describes SMA EV Charger select entities."""
 
     type: str = ""
     channel: str = ""
-    value_mapping: dict = field(default_factory=dict)
+    value_mapping: dict[str, Any] = field(default_factory=dict)
 
 
 SELECT_DESCRIPTIONS: tuple[SmaEvChargerSelectEntityDescription, ...] = (
@@ -78,26 +73,22 @@ SELECT_DESCRIPTIONS: tuple[SmaEvChargerSelectEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: SmaEvChargerConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up SMA EV Charger select entities."""
-    data = hass.data[DOMAIN][config_entry.entry_id]
-
-    coordinator = data[SMAEV_COORDINATOR]
-    device_info = data[SMAEV_DEVICE_INFO]
+    device_info = config_entry.runtime_data.device_info
+    channels = config_entry.runtime_data.channels
 
     if TYPE_CHECKING:
         assert config_entry.unique_id
 
-    entities = []
+    entities: list[SmaEvChargerSelect] = []
 
     for entity_description in SELECT_DESCRIPTIONS:
-        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+        if entity_description.channel in channels[entity_description.type]:
             entities.append(
-                SmaEvChargerSelect(
-                    hass, coordinator, config_entry, device_info, entity_description
-                )
+                SmaEvChargerSelect(hass, config_entry, device_info, entity_description)
             )
         else:
             _LOGGER.warning(
@@ -111,20 +102,20 @@ async def async_setup_entry(
 class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
     """Representation of a SMA EV Charger select entity."""
 
+    coordinator: SmaEvChargerCoordinator
     entity_description: SmaEvChargerSelectEntityDescription
     _attr_has_entity_name = True
 
     def __init__(
         self,
         hass: HomeAssistant,
-        coordinator: DataUpdateCoordinator,
-        config_entry: ConfigEntry,
+        config_entry: SmaEvChargerConfigEntry,
         device_info: DeviceInfo,
         entity_description: SmaEvChargerSelectEntityDescription,
     ) -> None:
         """Initialize the sensor."""
-        super().__init__(coordinator)
-        self.hass = (hass,)
+        super().__init__(config_entry.runtime_data.coordinator)
+        self.hass = hass
         self.config_entry = config_entry
         self.entity_description = entity_description
         self.entity_id = generate_smaev_entity_id(
@@ -148,8 +139,10 @@ class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
             self.entity_description.channel,
         )
 
-        possible_values = channel[SMAEV_POSSIBLE_VALUES]
-        value = channel[SMAEV_VALUE]
+        possible_values = cast(
+            PossibleValuesType, channel.get(SMAEV_POSSIBLE_VALUES, [])
+        )
+        value = str(channel[SMAEV_VALUE])
         options = [
             self.entity_description.value_mapping[possible_value]
             for possible_value in possible_values
@@ -161,7 +154,7 @@ class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
             self._attr_current_option = self.entity_description.value_mapping[value]
         super()._handle_coordinator_update()
 
-    async def force_refresh(self):
+    async def force_refresh(self) -> None:
         """Call coordinator update handle."""
         self._handle_coordinator_update()
 

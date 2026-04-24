@@ -10,9 +10,9 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/alengwenus/ha-sma-ev-charger/issues",
   "requirements": [
-    "pysmaev==0.1.7"
+    "pysmaev==0.1.9"
   ],
   "ssdp": [],
-  "version": "1.2.0",
+  "version": "1.2.2",
   "zeroconf": []
 }

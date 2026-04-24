@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import pysmaev.core
@@ -24,11 +25,7 @@ from homeassistant.helpers.entity import EntityDescription, async_generate_entit
 
 from .const import (
     DOMAIN,
-    SMAEV_CHANNELS,
-    SMAEV_COORDINATOR,
-    SMAEV_DEVICE_INFO,
     SMAEV_MEASUREMENT,
-    SMAEV_OBJECT,
     SMAEV_PARAMETER,
 )
 from .coordinator import SmaEvChargerCoordinator
@@ -46,10 +43,23 @@ PLATFORMS: list[Platform] = [
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up SMA EV Charger from a config entry."""
+@dataclass
+class SmaEvChargerRuntimeData:
+    """Data for SMA EV Charger config entry."""
 
-    hass.data.setdefault(DOMAIN, {})
+    evcharger: pysmaev.core.SmaEvCharger
+    device_info: DeviceInfo
+    coordinator: SmaEvChargerCoordinator
+    channels: dict[str, list[str]]
+
+
+type SmaEvChargerConfigEntry = ConfigEntry[SmaEvChargerRuntimeData]
+
+
+async def async_setup_entry(
+    hass: HomeAssistant, entry: SmaEvChargerConfigEntry
+) -> bool:
+    """Set up SMA EV Charger from a config entry."""
 
     protocol = "https" if entry.data[CONF_SSL] else "http"
     url = f"{protocol}://{entry.data[CONF_HOST]}"
@@ -85,15 +95,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     coordinator = SmaEvChargerCoordinator(hass, entry, evcharger)
 
-    hass.data[DOMAIN][entry.entry_id] = {
-        SMAEV_OBJECT: evcharger,
-        SMAEV_DEVICE_INFO: device_info,
-        SMAEV_COORDINATOR: coordinator,
-        SMAEV_CHANNELS: {
+    entry.runtime_data = SmaEvChargerRuntimeData(
+        evcharger=evcharger,
+        device_info=device_info,
+        coordinator=coordinator,
+        channels={
             SMAEV_MEASUREMENT: measurement_channels,
             SMAEV_PARAMETER: parameter_channels,
         },
-    }
+    )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
@@ -103,13 +113,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_unload_entry(
+    hass: HomeAssistant, entry: SmaEvChargerConfigEntry
+) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        evcharger_data = hass.data[DOMAIN].pop(entry.entry_id)
-        await evcharger_data[SMAEV_OBJECT].close()
+        await entry.runtime_data.evcharger.close()
 
-    if not hass.data[DOMAIN]:
+    if not hass.config_entries.async_loaded_entries(DOMAIN):
+        # Unload services if there are no more config entries for this domain.
         async_unload_services(hass)
 
     return unload_ok
@@ -117,20 +129,20 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 def generate_smaev_entity_id(
     hass: HomeAssistant,
-    config_entry,
+    config_entry: SmaEvChargerConfigEntry,
     entity_id_format: str,
     entity_description: EntityDescription,
     suffix: bool = True,
-):
+) -> str:
     """Generate a common formatted entity_id for SMA EV Charger entities."""
-    device_info = hass.data[DOMAIN][config_entry.entry_id][SMAEV_DEVICE_INFO]
+    device_info = config_entry.runtime_data.device_info
     return async_generate_entity_id(
         entity_id_format,
         "_".join(
             [
                 *(
                     elem
-                    for identifier in device_info["identifiers"]
+                    for identifier in device_info.get("identifiers", [])
                     for elem in identifier
                 ),
                 entity_description.key,

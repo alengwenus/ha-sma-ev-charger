@@ -5,37 +5,32 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from homeassistant.components.datetime import (
     ENTITY_ID_FORMAT,
     DateTimeEntity,
     DateTimeEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
-    DataUpdateCoordinator,
 )
 from pysmaev.helpers import get_parameters_channel
 
-from . import generate_smaev_entity_id
+from . import SmaEvChargerConfigEntry, generate_smaev_entity_id
 from .const import (
-    DOMAIN,
-    SMAEV_CHANNELS,
-    SMAEV_COORDINATOR,
-    SMAEV_DEVICE_INFO,
     SMAEV_PARAMETER,
     SMAEV_VALUE,
 )
+from .coordinator import SmaEvChargerCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(frozen=True)
 class SmaEvChargerDateTimeEntityDescription(DateTimeEntityDescription):
     """Describes SMA EV Charger datetime entities."""
 
@@ -56,25 +51,23 @@ DATETIME_DESCRIPTIONS: tuple[SmaEvChargerDateTimeEntityDescription] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: SmaEvChargerConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up SMA EV Charger number entities."""
-    data = hass.data[DOMAIN][config_entry.entry_id]
-
-    coordinator = data[SMAEV_COORDINATOR]
-    device_info = data[SMAEV_DEVICE_INFO]
+    device_info = config_entry.runtime_data.device_info
+    channels = config_entry.runtime_data.channels
 
     if TYPE_CHECKING:
         assert config_entry.unique_id
 
-    entities = []
+    entities: list[SmaEvChargerDateTime] = []
 
     for entity_description in DATETIME_DESCRIPTIONS:
-        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+        if entity_description.channel in channels[entity_description.type]:
             entities.append(
                 SmaEvChargerDateTime(
-                    hass, coordinator, config_entry, device_info, entity_description
+                    hass, config_entry, device_info, entity_description
                 )
             )
         else:
@@ -89,19 +82,19 @@ async def async_setup_entry(
 class SmaEvChargerDateTime(CoordinatorEntity, DateTimeEntity):
     """Representation of a SMA EV Charger datetime entity."""
 
+    coordinator: SmaEvChargerCoordinator
     entity_description: SmaEvChargerDateTimeEntityDescription
     _attr_has_entity_name = True
 
     def __init__(
         self,
         hass: HomeAssistant,
-        coordinator: DataUpdateCoordinator,
-        config_entry: ConfigEntry,
+        config_entry: SmaEvChargerConfigEntry,
         device_info: DeviceInfo,
         entity_description: SmaEvChargerDateTimeEntityDescription,
     ) -> None:
         """Initialize the sensor."""
-        super().__init__(coordinator)
+        super().__init__(config_entry.runtime_data.coordinator)
         self.hass = hass
         self.entity_description = entity_description
         self.entity_id = generate_smaev_entity_id(
@@ -121,7 +114,7 @@ class SmaEvChargerDateTime(CoordinatorEntity, DateTimeEntity):
         )
 
         self._attr_native_value = datetime.fromtimestamp(
-            int(channel[SMAEV_VALUE]), tz=UTC
+            int(cast(int, channel[SMAEV_VALUE])), tz=UTC
         )
         super()._handle_coordinator_update()
 
@@ -129,5 +122,5 @@ class SmaEvChargerDateTime(CoordinatorEntity, DateTimeEntity):
         """Update to the EV charger."""
         evcharger = self.coordinator.evcharger
         timestamp = int(value.timestamp())
-        await evcharger.set_parameter(timestamp, self.entity_description.channel)
+        await evcharger.set_parameter(str(timestamp), self.entity_description.channel)
         await self.coordinator.async_request_refresh()
