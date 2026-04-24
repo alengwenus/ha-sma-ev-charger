@@ -1,4 +1,5 @@
 """DataUpdateCoordinator for the SMA EV Charger integration."""
+
 import logging
 from datetime import timedelta
 

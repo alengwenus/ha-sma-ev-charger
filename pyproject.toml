@@ -1,7 +1,22 @@
-# The contents of this file is based on https://github.com/home-assistant/core/blob/dev/pyproject.toml
+[project]
+name = "ha-sma-ev-charger"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14.2"
+dependencies = [
+    "pysmaev==0.1.7",
+]
 
-target-version = "py312"
+[dependency-groups]
+dev = [
+    "homeassistant==2026.4.3",
+    "pre-commit==4.5.1",
+    "pytest-homeassistant-custom-component==0.13.324",
+    "ruff==0.15.8",
+]
 
+[tool.ruff.lint]
 select = [
     "B002",    # Python does not support the unary prefix increment
     "B007",    # Loop control variable {name} not used within loop body
@@ -42,7 +57,6 @@ select = [
     "S317",    # suspicious-xml-sax-usage
     "S318",    # suspicious-xml-mini-dom-usage
     "S319",    # suspicious-xml-pull-dom-usage
-    "S320",    # suspicious-xmle-tree-usage
     "S601",    # paramiko-call
     "S602",    # subprocess-popen-with-shell-equals-true
     "S604",    # call-with-shell-equals-true
@@ -60,7 +74,7 @@ select = [
     "T20",     # flake8-print
     "TID251",  # Banned imports
     "TRY004",  # Prefer TypeError exception for invalid type
-    "TRY302",  # Remove exception handler; error is immediately re-raised
+    "TRY203",  # Remove exception handler; error is immediately re-raised
     "UP",      # pyupgrade
     "W",       # pycodestyle
 ]
@@ -112,11 +126,4 @@ ignore = [
     "PLE0605",
 ]
 
-[flake8-pytest-style]
-fixture-parentheses = false
 
-[pyupgrade]
-keep-runtime-typing = true
-
-[mccabe]
-max-complexity = 25

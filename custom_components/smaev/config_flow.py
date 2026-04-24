@@ -1,4 +1,5 @@
 """Config flow for SMA EV Charger integration."""
+
 from __future__ import annotations
 
 import logging
@@ -18,7 +19,7 @@ from homeassistant.const import (
     CONF_USERNAME,
     CONF_VERIFY_SSL,
 )
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
@@ -70,14 +71,6 @@ class SmaEvChargerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
-    @staticmethod
-    @callback
-    def async_get_options_flow(
-        config_entry: config_entries.ConfigEntry,
-    ) -> config_entries.OptionsFlow:
-        """Get options flow for this handler."""
-        return SmaEvChargerOptionsFlowHandler(config_entry)
-
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -112,42 +105,3 @@ class SmaEvChargerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 data_schema=vol.Schema({}),
             )
         return await self.async_step_user()
-
-
-class SmaEvChargerOptionsFlowHandler(config_entries.OptionsFlow):
-    """Handle an options flow for SMA EV Charger."""
-
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize SMA EV Charger options flow."""
-        self.config_entry = config_entry
-
-    async def async_step_init(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
-        """Manage the SMA EV Charger options."""
-        if user_input is None:
-            return self.async_show_form(
-                step_id="init",
-                data_schema=self.add_suggested_values_to_schema(
-                    STEP_USER_DATA_SCHEMA, self.config_entry.data
-                ),
-            )
-
-        _, errors = await validate_input(self.hass, user_input)
-
-        if errors:
-            return self.async_show_form(
-                step_id="init",
-                data_schema=self.add_suggested_values_to_schema(
-                    STEP_USER_DATA_SCHEMA, self.config_entry.data
-                ),
-                errors=errors,
-            )
-
-        data = self.config_entry.data.copy()
-        data.update(user_input)
-        self.hass.config_entries.async_update_entry(self.config_entry, data=data)
-        await self.hass.async_create_task(
-            self.hass.config_entries.async_reload(self.config_entry.entry_id)
-        )
-        return self.async_create_entry(title="", data={})

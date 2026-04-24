@@ -1,4 +1,5 @@
 """Service calls for SMA EV Charger."""
+
 import voluptuous as vol
 from homeassistant.const import CONF_DEVICE_ID
 from homeassistant.core import HomeAssistant, ServiceCall, callback

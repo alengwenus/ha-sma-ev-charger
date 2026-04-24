@@ -1,4 +1,5 @@
 """Tests for the SMA EV Charger config flow."""
+
 from unittest.mock import patch
 
 import pysmaev.core
@@ -75,53 +76,53 @@ async def test_step_user_error(hass, error, errors):
         assert result["errors"] == errors
 
 
-@patch.object(pysmaev.core, "SmaEvCharger", MockSmaEvCharger)
-async def test_options_flow(hass, entry):
-    """Test config flow options."""
-    entry.add_to_hass(hass)
-    result = await hass.config_entries.options.async_init(entry.entry_id)
+# @patch.object(pysmaev.core, "SmaEvCharger", MockSmaEvCharger)
+# async def test_options_flow(hass, entry):
+#     """Test config flow options."""
+#     entry.add_to_hass(hass)
+#     result = await hass.config_entries.options.async_init(entry.entry_id)
 
-    assert result["type"] == data_entry_flow.FlowResultType.FORM
-    assert result["step_id"] == "init"
+#     assert result["type"] == data_entry_flow.FlowResultType.FORM
+#     assert result["step_id"] == "init"
 
-    user_input = CONFIG_DATA.copy()
+#     user_input = CONFIG_DATA.copy()
 
-    result = await hass.config_entries.options.async_configure(
-        result["flow_id"], user_input=user_input
-    )
+#     result = await hass.config_entries.options.async_configure(
+#         result["flow_id"], user_input=user_input
+#     )
 
-    assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
-    assert all(value == entry.data[key] for key, value in user_input.items())
+#     assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
+#     assert all(value == entry.data[key] for key, value in user_input.items())
 
 
-@pytest.mark.parametrize(
-    ("error", "errors"),
-    [
-        (pysmaev.exceptions.SmaEvChargerConnectionError, {CONF_BASE: "cannot_connect"}),
-        (
-            pysmaev.exceptions.SmaEvChargerAuthenticationError,
-            {CONF_BASE: "invalid_auth"},
-        ),
-        (Exception, {CONF_BASE: "unknown"}),
-    ],
-)
-async def test_options_flow_errors(hass, entry, error, errors):
-    """Test config flow options."""
-    entry.add_to_hass(hass)
-    result = await hass.config_entries.options.async_init(entry.entry_id)
+# @pytest.mark.parametrize(
+#     ("error", "errors"),
+#     [
+#         (pysmaev.exceptions.SmaEvChargerConnectionError, {CONF_BASE: "cannot_connect"}),
+#         (
+#             pysmaev.exceptions.SmaEvChargerAuthenticationError,
+#             {CONF_BASE: "invalid_auth"},
+#         ),
+#         (Exception, {CONF_BASE: "unknown"}),
+#     ],
+# )
+# async def test_options_flow_errors(hass, entry, error, errors):
+#     """Test config flow options."""
+#     entry.add_to_hass(hass)
+#     result = await hass.config_entries.options.async_init(entry.entry_id)
 
-    assert result["type"] == data_entry_flow.FlowResultType.FORM
-    assert result["step_id"] == "init"
+#     assert result["type"] == data_entry_flow.FlowResultType.FORM
+#     assert result["step_id"] == "init"
 
-    user_input = CONFIG_DATA.copy()
+#     user_input = CONFIG_DATA.copy()
 
-    with patch("pysmaev.core.SmaEvCharger.open", side_effect=error):
-        result = await hass.config_entries.options.async_configure(
-            result["flow_id"], user_input=user_input
-        )
+#     with patch("pysmaev.core.SmaEvCharger.open", side_effect=error):
+#         result = await hass.config_entries.options.async_configure(
+#             result["flow_id"], user_input=user_input
+#         )
 
-    assert result["type"] == data_entry_flow.FlowResultType.FORM
-    assert result["errors"] == errors
+#     assert result["type"] == data_entry_flow.FlowResultType.FORM
+#     assert result["errors"] == errors
 
 
 async def test_validate_connection(hass: HomeAssistant):

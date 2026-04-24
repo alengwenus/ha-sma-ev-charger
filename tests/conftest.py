@@ -1,4 +1,5 @@
 """Fixtures for testing."""
+
 import json
 import os
 import sys
