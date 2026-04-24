@@ -9,11 +9,12 @@ on:
   pull_request: ~
 
 jobs:
-  build:
+  CI:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
+    - name: Checkout code
+      uses: actions/checkout@v6
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -21,10 +22,14 @@ jobs:
     - name: Install uv
       uses: astral-sh/setup-uv@v7
     - name: Install dependencies
-      run: uv sync --locked --all-extras --dev
+      run: |
+        uv sync --locked --all-extras --dev
     - name: Install pre-commit dependencies
       run: |
         uv run pre-commit install-hooks
     - name: Run ruff
       run: |
         uv run pre-commit run ruff --all-files --show-diff-on-failure
+    - name: Run pytest
+      run: |
+        uv run pytest -v --cov=custom_components --cov-report=xml
