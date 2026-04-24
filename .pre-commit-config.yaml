@@ -7,3 +7,11 @@ repos:
           - --fix
       - id: ruff-format
         files: ^((custom_components|tests)/.+)?[^/]+\.py$
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.2
+    hooks:
+      - id: codespell
+        args:
+          - --ignore-words-list=hass,
+          - --skip="./.*,*.json,*.ambr"
+          - --quiet-level=2

@@ -21,6 +21,7 @@ lib64
 # pytest
 .pytest_cache
 .cache
+coverage.xml
 
 # Development
 .settings

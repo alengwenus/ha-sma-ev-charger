@@ -99,7 +99,7 @@ async def init_integration(hass, entry):
 
 @pytest.fixture(name="channel_values")
 def get_channel_values():
-    """Get a dirctionary with the measurment and parameter channel values."""
+    """Get a dirctionary with the measurement and parameter channel values."""
     channel_values = {}
     for channel in MEASUREMENTS:
         channel_values[channel["channelId"]] = channel["values"][0].get("value")
