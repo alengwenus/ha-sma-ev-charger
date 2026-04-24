@@ -1,6 +1,6 @@
 """Test init of SMA EV Charger integration."""
 
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pysmaev.core
 import pysmaev.exceptions
@@ -70,6 +70,7 @@ async def test_async_setup_multiple_entries(hass: HomeAssistant) -> None:
         pysmaev.exceptions.SmaEvChargerAuthenticationError,
     ],
 )
+@patch.object(smaev, "async_get_clientsession", AsyncMock)
 async def test_async_setup_entry_raises_error(
     hass: HomeAssistant, entry, error
 ) -> None:
