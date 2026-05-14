@@ -95,3 +95,33 @@ class SmaEvChargerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
         )
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle the reconfigure step."""
+        errors: dict[str, str] = {}
+        reconfigure_entry = self._get_reconfigure_entry()
+        self._reconfigure_data = reconfigure_entry.data.copy()
+
+        if user_input is not None:
+            self._async_abort_entries_match(
+                {
+                    CONF_HOST: user_input[CONF_HOST],
+                }
+            )
+
+            self._reconfigure_data = user_input
+            errors |= await validate_input(self.hass, user_input)
+            if not errors:
+                return self.async_update_reload_and_abort(
+                    self._get_reconfigure_entry(), data=self._reconfigure_data
+                )
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=self.add_suggested_values_to_schema(
+                STEP_USER_DATA_SCHEMA, self._reconfigure_data
+            ),
+            errors=errors,
+        )

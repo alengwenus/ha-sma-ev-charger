@@ -12,9 +12,16 @@
         "title": "Set up SMA EV Charger",
         "description": "Enter your  SMA EV Charger device information."
       },
-      "reauth_confirm": {
-        "title": "Reauthenticate integration",
-        "description": "The SMA EV Charger integration needs to re-authenticate your account"
+      "reconfigure": {
+        "data": {
+          "host": "Host",
+          "username": "Username",
+          "password": "Password",
+          "ssl": "Use an SSL certificate",
+          "verify_ssl": "Verify SSL certificate"
+        },
+        "title": "Reconfigure SMA EV Charger",
+        "description": "Update your SMA EV Charger device information."
       }
     },
     "error": {
@@ -24,7 +31,7 @@
     },
     "abort": {
       "already_configured": "Device is already configured",
-      "reauth_successful": "Re-authentication was successful"
+      "reconfigure_successful": "Reconfigure successful."
     }
   },
   "options": {
