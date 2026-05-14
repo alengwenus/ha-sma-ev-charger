@@ -1,10 +1,11 @@
 """Test for the SMA EV Charger switch platform."""
 
+from homeassistant.components.switch import ENTITY_ID_FORMAT
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 
 from custom_components.smaev import generate_smaev_entity_id
-from custom_components.smaev.switch import ENTITY_ID_FORMAT, SWITCH_DESCRIPTIONS
+from custom_components.smaev.switch import SWITCH_DESCRIPTIONS
 
 
 async def test_setup_smaev_switch(hass: HomeAssistant, entry, evcharger):

@@ -12,9 +12,9 @@ from homeassistant.const import (
 from homeassistant.core import Context, HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.typing import ConfigType, TemplateVarsType
 
-from . import DOMAIN
-from .const import SERVICE_RESTART
+from .const import DOMAIN, SERVICE_RESTART
 
 ACTION_TYPES = {"restart"}
 
@@ -34,7 +34,7 @@ async def async_get_actions(
     if registry_device is None:
         return []
 
-    actions = []
+    actions: list[dict[str, str]] = []
 
     base_action = {
         CONF_DEVICE_ID: device_id,
@@ -47,7 +47,10 @@ async def async_get_actions(
 
 
 async def async_call_action_from_config(
-    hass: HomeAssistant, config: dict, variables: dict, context: Context | None
+    hass: HomeAssistant,
+    config: ConfigType,
+    variables: TemplateVarsType,
+    context: Context | None,
 ) -> None:
     """Execute a device action."""
     service_data = {ATTR_DEVICE_ID: config[CONF_DEVICE_ID]}

@@ -13,7 +13,6 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     EntityCategory,
     UnitOfElectricCurrent,
@@ -27,32 +26,28 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
-    DataUpdateCoordinator,
 )
 from pysmaev.const import SmaEvChargerMeasurements
 from pysmaev.helpers import get_measurements_channel, get_parameters_channel
 
-from . import generate_smaev_entity_id
+from . import SmaEvChargerConfigEntry, generate_smaev_entity_id
 from .const import (
-    DOMAIN,
-    SMAEV_CHANNELS,
-    SMAEV_COORDINATOR,
-    SMAEV_DEVICE_INFO,
     SMAEV_MEASUREMENT,
     SMAEV_PARAMETER,
     SMAEV_VALUE,
 )
+from .coordinator import SmaEvChargerCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(frozen=True)
 class SmaEvChargerSensorEntityDescription(SensorEntityDescription):
     """Describes SMA EV Charger sensor entities."""
 
     type: str = ""
     channel: str = ""
-    value_mapping: dict = field(default_factory=dict)
+    value_mapping: dict[int | str, str] = field(default_factory=dict)
 
 
 SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
@@ -201,26 +196,22 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: SmaEvChargerConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up SMA EV Charger sensors."""
-    data = hass.data[DOMAIN][config_entry.entry_id]
-
-    coordinator = data[SMAEV_COORDINATOR]
-    device_info = data[SMAEV_DEVICE_INFO]
+    device_info = config_entry.runtime_data.device_info
+    channels = config_entry.runtime_data.channels
 
     if TYPE_CHECKING:
         assert config_entry.unique_id
 
-    entities = []
+    entities: list[SmaEvChargerSensor] = []
 
     for entity_description in SENSOR_DESCRIPTIONS:
-        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+        if entity_description.channel in channels[entity_description.type]:
             entities.append(
-                SmaEvChargerSensor(
-                    hass, coordinator, config_entry, device_info, entity_description
-                )
+                SmaEvChargerSensor(hass, config_entry, device_info, entity_description)
             )
         else:
             _LOGGER.warning(
@@ -234,19 +225,19 @@ async def async_setup_entry(
 class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
     """Representation of a SMA EV Charger sensor."""
 
+    coordinator: SmaEvChargerCoordinator
     entity_description: SmaEvChargerSensorEntityDescription
     _attr_has_entity_name = True
 
     def __init__(
         self,
         hass: HomeAssistant,
-        coordinator: DataUpdateCoordinator,
-        config_entry: ConfigEntry,
+        config_entry: SmaEvChargerConfigEntry,
         device_info: DeviceInfo,
         entity_description: SmaEvChargerSensorEntityDescription,
     ) -> None:
         """Initialize the sensor."""
-        super().__init__(coordinator)
+        super().__init__(config_entry.runtime_data.coordinator)
         self.hass = hass
         self.entity_description = entity_description
         self.entity_id = generate_smaev_entity_id(
@@ -259,20 +250,21 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
+        value: int | str
         if self.entity_description.type == SMAEV_MEASUREMENT:
-            channel = get_measurements_channel(
+            measurements_channel = get_measurements_channel(
                 self.coordinator.data[SMAEV_MEASUREMENT],
                 self.entity_description.channel,
             )
-            value = channel[0][SMAEV_VALUE]
+            value = int(measurements_channel[0][SMAEV_VALUE])
         else:  # SMAEV_PARAMETER
-            channel = get_parameters_channel(
+            parameters_channel = get_parameters_channel(
                 self.coordinator.data[SMAEV_PARAMETER],
                 self.entity_description.channel,
             )
-            value = channel[SMAEV_VALUE]
+            value = str(parameters_channel[SMAEV_VALUE])
 
-        value = self.entity_description.value_mapping.get(value, value)
+        value = self.entity_description.value_mapping.get(value) or value
 
         self._attr_native_value = value
         super()._handle_coordinator_update()

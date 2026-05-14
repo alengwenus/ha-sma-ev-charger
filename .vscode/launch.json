@@ -11,9 +11,13 @@
             "module": "homeassistant",
             "args": [
                 "--debug",
-                "-c",
-                "config"
+                "--config",
+                "${workspaceFolder}/config",
             ],
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
             "console": "integratedTerminal",
             "justMyCode": false
         },

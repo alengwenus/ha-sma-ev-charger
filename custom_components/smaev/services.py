@@ -19,7 +19,7 @@ SERVICE_RESTART_SCHEMA = SERVICE_BASE_SCHEMA
 
 
 @callback
-def async_setup_services(hass: HomeAssistant) -> bool:
+def async_setup_services(hass: HomeAssistant) -> None:
     """Set up services for the SMA EV Charger integration."""
 
     async def _async_service_reset(call: ServiceCall) -> None:
@@ -42,12 +42,4 @@ def async_setup_services(hass: HomeAssistant) -> bool:
 @callback
 def async_unload_services(hass: HomeAssistant) -> None:
     """Unload services for the SMA EV Charger integration."""
-    if hass.data[DOMAIN]:
-        # There is still another config entry for this domain, don't remove services.
-        return
-
-    existing_services = hass.services.async_services().get(DOMAIN)
-    if not existing_services or SERVICE_RESTART not in existing_services:
-        return
-
     hass.services.async_remove(domain=DOMAIN, service=SERVICE_RESTART)

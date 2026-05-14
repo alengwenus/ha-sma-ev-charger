@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from homeassistant.components.number import (
     ENTITY_ID_FORMAT,
@@ -12,7 +12,6 @@ from homeassistant.components.number import (
     NumberEntityDescription,
     NumberMode,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     EntityCategory,
     UnitOfElectricCurrent,
@@ -25,28 +24,24 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
-    DataUpdateCoordinator,
 )
-from pysmaev.helpers import get_parameters_channel
+from pysmaev.helpers import expect_type, get_parameters_channel
 
-from . import generate_smaev_entity_id
+from . import SmaEvChargerConfigEntry, generate_smaev_entity_id
 from .const import (
-    DOMAIN,
-    SMAEV_CHANNELS,
-    SMAEV_COORDINATOR,
     SMAEV_DEFAULT_MAX,
     SMAEV_DEFAULT_MIN,
-    SMAEV_DEVICE_INFO,
     SMAEV_MAX_VALUE,
     SMAEV_MIN_VALUE,
     SMAEV_PARAMETER,
     SMAEV_VALUE,
 )
+from .coordinator import SmaEvChargerCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(frozen=True)
 class SmaEvChargerNumberEntityDescription(NumberEntityDescription):
     """Describes SMA EV Charger number entities."""
 
@@ -111,25 +106,22 @@ NUMBER_DESCRIPTIONS: tuple[SmaEvChargerNumberEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: SmaEvChargerConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up SMA EV Charger number entities."""
-    data = hass.data[DOMAIN][config_entry.entry_id]
-
-    coordinator = data[SMAEV_COORDINATOR]
-    device_info = data[SMAEV_DEVICE_INFO]
+    device_info = config_entry.runtime_data.device_info
+    channels = config_entry.runtime_data.channels
 
     if TYPE_CHECKING:
         assert config_entry.unique_id
 
-    entities = []
+    entities: list[SmaEvChargerNumber] = []
+
     for entity_description in NUMBER_DESCRIPTIONS:
-        if entity_description.channel in data[SMAEV_CHANNELS][entity_description.type]:
+        if entity_description.channel in channels[entity_description.type]:
             entities.append(
-                SmaEvChargerNumber(
-                    hass, coordinator, config_entry, device_info, entity_description
-                )
+                SmaEvChargerNumber(hass, config_entry, device_info, entity_description)
             )
         else:
             _LOGGER.warning(
@@ -143,19 +135,19 @@ async def async_setup_entry(
 class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
     """Representation of a SMA EV Charger number entity."""
 
+    coordinator: SmaEvChargerCoordinator
     entity_description: SmaEvChargerNumberEntityDescription
     _attr_has_entity_name = True
 
     def __init__(
         self,
         hass: HomeAssistant,
-        coordinator: DataUpdateCoordinator,
-        config_entry: ConfigEntry,
+        config_entry: SmaEvChargerConfigEntry,
         device_info: DeviceInfo,
         entity_description: SmaEvChargerNumberEntityDescription,
     ) -> None:
         """Initialize the sensor."""
-        super().__init__(coordinator)
+        super().__init__(config_entry.runtime_data.coordinator)
         self.hass = hass
         self.config_entry = config_entry
         self.entity_description = entity_description
@@ -167,7 +159,7 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
         self._attr_unique_id = f"{config_entry.unique_id}-{self.entity_description.key}"
         self._attr_native_min_value = SMAEV_DEFAULT_MIN
         self._attr_native_max_value = SMAEV_DEFAULT_MAX
-        self._attr_native_step = entity_description.native_step
+        self._attr_native_step = entity_description.native_step or 1
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -179,7 +171,7 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
 
         min_value = channel.get(SMAEV_MIN_VALUE)
         max_value = channel.get(SMAEV_MAX_VALUE)
-        value = float(channel[SMAEV_VALUE])
+        value = float(expect_type(str, channel[SMAEV_VALUE]))
         if self.native_step == 1:
             value = int(value)
         if (
@@ -190,14 +182,14 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
                 or (max_value != self._attr_native_max_value)
             )
         ):
-            self._attr_native_min_value = min_value
-            self._attr_native_max_value = max_value
+            self._attr_native_min_value = cast(float, min_value)
+            self._attr_native_max_value = cast(float, max_value)
             self.hass.async_create_task(self.force_refresh())
         else:
             self._attr_native_value = value
         super()._handle_coordinator_update()
 
-    async def force_refresh(self):
+    async def force_refresh(self) -> None:
         """Call coordinator update handle."""
         self._handle_coordinator_update()
 

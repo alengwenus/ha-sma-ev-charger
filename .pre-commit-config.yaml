@@ -15,3 +15,20 @@ repos:
           - --ignore-words-list=hass,
           - --skip="./.*,*.json,*.ambr"
           - --quiet-level=2
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy custom_components
+        entry: uv run mypy
+        language: system
+        args:
+          - --strict
+        files: ^(custom_components)/.+\.py$
+      # - id: mypy
+      #   name: mypy tests
+      #   entry: uv run mypy
+      #   language: system
+      #   args:
+      #     - --strict
+      #     - --allow-untyped-defs
+      #   files: ^(tests)/.+\.py$
