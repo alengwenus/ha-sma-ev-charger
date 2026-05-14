@@ -178,6 +178,9 @@
       },
       "manual_charging_release": {
         "name": "Manuelle Ladefreigabe"
+      },
+      "lock_charging_cable": {
+        "name": "Ladekabel an Ladestation verriegeln"
       }
     }
   }
