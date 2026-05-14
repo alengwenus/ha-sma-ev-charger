@@ -12,7 +12,7 @@ from homeassistant.core import HomeAssistant
 from custom_components import smaev
 from custom_components.smaev.config_flow import SmaEvChargerConfigFlow, validate_input
 
-from .conftest import CONFIG_DATA, DEVICE_INFO, MockSmaEvCharger
+from .conftest import CONFIG_DATA, MockConfigEntry, MockSmaEvCharger
 
 
 async def test_show_form(hass: HomeAssistant) -> None:
@@ -76,53 +76,58 @@ async def test_step_user_error(hass, error, errors):
         assert result["errors"] == errors
 
 
-# @patch.object(pysmaev.core, "SmaEvCharger", MockSmaEvCharger)
-# async def test_options_flow(hass, entry):
-#     """Test config flow options."""
-#     entry.add_to_hass(hass)
-#     result = await hass.config_entries.options.async_init(entry.entry_id)
+@patch.object(pysmaev.core, "SmaEvCharger", MockSmaEvCharger)
+async def test_step_reconfigure(hass: HomeAssistant, entry: MockSmaEvCharger):
+    """Test for reconfigure step."""
+    entry.add_to_hass(hass)
+    old_entry_data = entry.data.copy()
 
-#     assert result["type"] == data_entry_flow.FlowResultType.FORM
-#     assert result["step_id"] == "init"
+    result = await entry.start_reconfigure_flow(hass)
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
+    assert result["step_id"] == "reconfigure"
 
-#     user_input = CONFIG_DATA.copy()
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], user_input=CONFIG_DATA.copy()
+    )
+    assert result["type"] == data_entry_flow.FlowResultType.ABORT
+    assert result["reason"] == "reconfigure_successful"
 
-#     result = await hass.config_entries.options.async_configure(
-#         result["flow_id"], user_input=user_input
-#     )
-
-#     assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
-#     assert all(value == entry.data[key] for key, value in user_input.items())
+    entry = hass.config_entries.async_get_entry(entry.entry_id)
+    assert entry.data == {**old_entry_data, **CONFIG_DATA}
 
 
-# @pytest.mark.parametrize(
-#     ("error", "errors"),
-#     [
-#         (pysmaev.exceptions.SmaEvChargerConnectionError, {CONF_BASE: "cannot_connect"}),
-#         (
-#             pysmaev.exceptions.SmaEvChargerAuthenticationError,
-#             {CONF_BASE: "invalid_auth"},
-#         ),
-#         (Exception, {CONF_BASE: "unknown"}),
-#     ],
-# )
-# async def test_options_flow_errors(hass, entry, error, errors):
-#     """Test config flow options."""
-#     entry.add_to_hass(hass)
-#     result = await hass.config_entries.options.async_init(entry.entry_id)
+@pytest.mark.parametrize(
+    ("error", "errors"),
+    [
+        (pysmaev.exceptions.SmaEvChargerConnectionError, {CONF_BASE: "cannot_connect"}),
+        (
+            pysmaev.exceptions.SmaEvChargerAuthenticationError,
+            {CONF_BASE: "invalid_auth"},
+        ),
+        (Exception, {CONF_BASE: "unknown"}),
+    ],
+)
+async def test_step_reconfigure_error(
+    hass: HomeAssistant,
+    entry: MockConfigEntry,
+    error: type[Exception],
+    errors: dict[str, str],
+) -> None:
+    """Test for error in reconfigure step is handled correctly."""
+    entry.add_to_hass(hass)
 
-#     assert result["type"] == data_entry_flow.FlowResultType.FORM
-#     assert result["step_id"] == "init"
+    result = await entry.start_reconfigure_flow(hass)
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
+    assert result["step_id"] == "reconfigure"
 
-#     user_input = CONFIG_DATA.copy()
+    with patch("pysmaev.core.SmaEvCharger.open", side_effect=error):
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            CONFIG_DATA.copy(),
+        )
 
-#     with patch("pysmaev.core.SmaEvCharger.open", side_effect=error):
-#         result = await hass.config_entries.options.async_configure(
-#             result["flow_id"], user_input=user_input
-#         )
-
-#     assert result["type"] == data_entry_flow.FlowResultType.FORM
-#     assert result["errors"] == errors
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
+        assert result["errors"] == errors
 
 
 async def test_validate_connection(hass: HomeAssistant):
@@ -134,7 +139,7 @@ async def test_validate_connection(hass: HomeAssistant):
 
     assert mock.open.is_called
     assert mock.device_info.is_called
-    assert result == (DEVICE_INFO, {})
+    assert result == {}
 
 
 @pytest.mark.parametrize(
@@ -155,4 +160,4 @@ async def test_validate_connection_raises_error(hass: HomeAssistant, error, erro
     with patch("pysmaev.core.SmaEvCharger.open", side_effect=error):
         result = await validate_input(hass, data=data)
 
-    assert result == ({}, errors)
+    assert result == errors
