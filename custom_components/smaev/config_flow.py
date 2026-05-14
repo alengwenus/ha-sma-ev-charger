@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Mapping
 from typing import Any
 
 import homeassistant.helpers.config_validation as cv
@@ -38,9 +37,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 )
 
 
-async def validate_input(
-    hass: HomeAssistant, data: dict[str, Any]
-) -> tuple[dict[str, Any], dict[str, str]]:
+async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, str]:
     """Validate the user input allows us to connect."""
     session = async_get_clientsession(hass, verify_ssl=data[CONF_VERIFY_SSL])
 
@@ -51,7 +48,6 @@ async def validate_input(
     )
 
     errors: dict[str, str] = {}
-    device_info: dict[str, str] = {}
     try:
         await evcharger.open()
     except pysmaev.exceptions.SmaEvChargerConnectionError:
@@ -61,51 +57,41 @@ async def validate_input(
     except Exception:  # pylint: disable=broad-except
         _LOGGER.exception("Unexpected exception")
         errors[CONF_BASE] = "unknown"
-    else:
-        device_info = await evcharger.device_info()
 
     await evcharger.close()
-    return device_info, errors
+    return errors
 
 
 class SmaEvChargerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for SMA EV Charger."""
 
     VERSION = 1
+    MINOR_VERSION = 0
+
+    _config_data: dict[str, str]
+    _reconfigure_data: dict[str, str]
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle the initial step."""
-        if user_input is None:
-            return self.async_show_form(
-                step_id="user", data_schema=STEP_USER_DATA_SCHEMA
+        self._config_data = {}
+        errors: dict[str, str] = {}
+
+        if user_input is not None:
+            self._async_abort_entries_match(
+                {
+                    CONF_HOST: user_input[CONF_HOST],
+                }
             )
 
-        device_info, errors = await validate_input(self.hass, user_input)
+            errors |= await validate_input(self.hass, user_input)
+            if not errors:
+                self._config_data.update(user_input)
+                return self.async_create_entry(
+                    title=user_input[CONF_HOST], data=self._config_data
+                )
 
-        if errors:
-            return self.async_show_form(
-                step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
-            )
-
-        await self.async_set_unique_id(device_info["serial"])
-        self._abort_if_unique_id_configured(updates=user_input)
-        return self.async_create_entry(title=user_input[CONF_HOST], data=user_input)
-
-    async def async_step_reauth(
-        self, user_input: Mapping[str, Any]
-    ) -> ConfigFlowResult:
-        """Perform reauth upon an API authentication error."""
-        return await self.async_step_reauth_confirm()
-
-    async def async_step_reauth_confirm(
-        self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
-        """Dialog that informs the user that reauth is required."""
-        if user_input is None:
-            return self.async_show_form(
-                step_id="reauth_confirm",
-                data_schema=vol.Schema({}),
-            )
-        return await self.async_step_user()
+        return self.async_show_form(
+            step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
+        )

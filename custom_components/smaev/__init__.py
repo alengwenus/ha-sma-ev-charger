@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
 import pysmaev.core
 import pysmaev.exceptions
@@ -77,12 +76,9 @@ async def async_setup_entry(
     except pysmaev.exceptions.SmaEvChargerAuthenticationError as exc:
         raise ConfigEntryAuthFailed from exc
 
-    if TYPE_CHECKING:
-        assert entry.unique_id
-
     device_info = DeviceInfo(
         configuration_url=url,
-        identifiers={(DOMAIN, entry.unique_id)},
+        identifiers={(DOMAIN, smaev_device_info["serial"])},
         manufacturer=smaev_device_info["manufacturer"],
         model=smaev_device_info["model"],
         name=smaev_device_info["name"],

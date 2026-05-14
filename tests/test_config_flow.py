@@ -12,7 +12,7 @@ from homeassistant.core import HomeAssistant
 from custom_components import smaev
 from custom_components.smaev.config_flow import SmaEvChargerConfigFlow, validate_input
 
-from .conftest import CONFIG_DATA, DEVICE_INFO, MockSmaEvCharger
+from .conftest import CONFIG_DATA, MockSmaEvCharger
 
 
 async def test_show_form(hass: HomeAssistant) -> None:
@@ -134,7 +134,7 @@ async def test_validate_connection(hass: HomeAssistant):
 
     assert mock.open.is_called
     assert mock.device_info.is_called
-    assert result == (DEVICE_INFO, {})
+    assert result == {}
 
 
 @pytest.mark.parametrize(
@@ -155,4 +155,4 @@ async def test_validate_connection_raises_error(hass: HomeAssistant, error, erro
     with patch("pysmaev.core.SmaEvCharger.open", side_effect=error):
         result = await validate_input(hass, data=data)
 
-    assert result == ({}, errors)
+    assert result == errors
