@@ -140,8 +140,7 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
             SmaEvChargerMeasurements.SLEEP_MODE: "sleep_mode",
             SmaEvChargerMeasurements.ACTIVE_MODE: "active_mode",
             SmaEvChargerMeasurements.STATION_LOCKED: "station_locked",
-            # Use the raw value until pysmaev ships STATION_FAULT (alengwenus/pysmaev#9)
-            200115: "station_fault",
+            SmaEvChargerMeasurements.STATION_FAULT: "station_fault",
         },
         device_class=SensorDeviceClass.ENUM,
         options=[
