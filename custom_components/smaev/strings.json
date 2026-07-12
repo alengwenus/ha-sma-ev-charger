@@ -144,7 +144,8 @@
           "not_connected": "Not connected",
           "sleep_mode": "In sleep mode",
           "active_mode": "In active mode",
-          "station_locked": "Charging station locked"
+          "station_locked": "Charging station locked",
+          "station_fault": "Charging station fault"
         }
       },
       "connected_vehicle_status": {

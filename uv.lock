@@ -941,7 +941,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "mypy", specifier = ">=1.20.2" },
-    { name = "pysmaev", specifier = "==0.1.9" },
+    { name = "pysmaev", specifier = "==0.1.10" },
 ]
 
 [package.metadata.requires-dev]
@@ -1882,14 +1882,14 @@ sdist = { url = "https://files.pythonhosted.org/packages/08/64/a99f27d3b4347486c
 
 [[package]]
 name = "pysmaev"
-version = "0.1.9"
+version = "0.1.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e1/1a/bf493d49135801aab1b0b0a036135f0c202b5c3b8c438e9c46280d771e4a/pysmaev-0.1.9.tar.gz", hash = "sha256:33de213ef482977f2261d4b782b8bf29b036530b4c711819147020c41c93f9d2", size = 9216, upload-time = "2026-05-14T10:52:03.476Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/05/bb/43b22bc3e73b3eda2630b2554b0b630cd12a562b8dba19bb46ddb8d11f65/pysmaev-0.1.10.tar.gz", hash = "sha256:0f1f73ba604beddc82cb0e35ea91f9b0e2bd295ee97c4c30e8749f6be52d4f04", size = 9296, upload-time = "2026-07-12T06:40:51.146Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bf/8c/02a32252f0af2ec7c07f5bbc21cc6841dd1fe2d8cb698fd5e0cab794d7d9/pysmaev-0.1.9-py3-none-any.whl", hash = "sha256:ac59cb0006a9756e1a856b3b05bb793cb43595f60c6c9175a45dae52c626b81d", size = 7175, upload-time = "2026-05-14T10:52:02.282Z" },
+    { url = "https://files.pythonhosted.org/packages/19/11/9a28002afff977f0ba45eece488c38cb82576111392ba37cb48951247295/pysmaev-0.1.10-py3-none-any.whl", hash = "sha256:23f023669865e0c2efb4fffc26c0f1d3c5de609379701bc118c93bccd1269223", size = 7278, upload-time = "2026-07-12T06:40:50.157Z" },
 ]
 
 [[package]]

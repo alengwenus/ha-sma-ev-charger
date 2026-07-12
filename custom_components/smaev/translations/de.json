@@ -117,7 +117,8 @@
           "active_mode": "Ladevorgang aktiv",
           "not_connected": "nicht verbunden",
           "sleep_mode": "schlafend",
-          "station_locked": "Ladestation gesperrt"
+          "station_locked": "Ladestation gesperrt",
+          "station_fault": "Störung der Ladestation"
         }
       },
       "connected_vehicle_status": {

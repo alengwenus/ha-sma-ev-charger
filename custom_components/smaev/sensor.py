@@ -140,9 +140,16 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
             SmaEvChargerMeasurements.SLEEP_MODE: "sleep_mode",
             SmaEvChargerMeasurements.ACTIVE_MODE: "active_mode",
             SmaEvChargerMeasurements.STATION_LOCKED: "station_locked",
+            SmaEvChargerMeasurements.STATION_FAULT: "station_fault",
         },
         device_class=SensorDeviceClass.ENUM,
-        options=["not_connected", "sleep_mode", "active_mode", "station_locked"],
+        options=[
+            "not_connected",
+            "sleep_mode",
+            "active_mode",
+            "station_locked",
+            "station_fault",
+        ],
         entity_registry_enabled_default=True,
     ),
     SmaEvChargerSensorEntityDescription(
@@ -246,6 +253,7 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
 
         self._attr_device_info = device_info
         self._attr_unique_id = f"{config_entry.unique_id}-{self.entity_description.key}"
+        self._unknown_value_reported: int | str | None = None
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -265,6 +273,24 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
             value = str(parameters_channel[SMAEV_VALUE])
 
         value = self.entity_description.value_mapping.get(value) or value
+
+        if (
+            self.entity_description.device_class == SensorDeviceClass.ENUM
+            and self.entity_description.options is not None
+            and value not in self.entity_description.options
+        ):
+            # An unmapped enum value would raise a ValueError in every
+            # coordinator update, spamming the log and freezing all entities
+            # of this device. Report it once and mark the sensor unknown.
+            if value != self._unknown_value_reported:
+                _LOGGER.warning(
+                    "Unknown value %s for %s. Please report this at "
+                    "https://github.com/alengwenus/ha-sma-ev-charger/issues",
+                    value,
+                    self.entity_id,
+                )
+                self._unknown_value_reported = value
+            value = None
 
         self._attr_native_value = value
         super()._handle_coordinator_update()
