@@ -1,8 +1,8 @@
-# SMA EV Charger integration for Home Assistant
+# SMA EV Charger and eCharger integration for Home Assistant
 
 Home Assistant (https://www.home-assistant.io) Integration Component
 
-This custom component integrates the SMA EV Charger into Home Assistant.
+This custom component integrates the SMA EV Charger and the SMA eCharger into Home Assistant.
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
@@ -23,7 +23,7 @@ Click on the following button to have the SMA EV Charger integration added autom
 
 #### Manually in HACS
 
-If _My Home Assistant_ does not work for you, you might consider installing the SMA EV Charger integration manually using HACS. For this you need to add a custom repository following the instructions [here](https://hacs.xyz/docs/faq/custom_repositories/).
+If _My Home Assistant_ does not work for you, you might consider installing the integration manually using HACS. For this you need to add a custom repository following the instructions [here](https://hacs.xyz/docs/faq/custom_repositories/).
 
 When asked, use the custom repository link `https://github.com/alengwenus/ha-sma-ev-charger`
 
@@ -50,7 +50,7 @@ You probably **do not** want to do this! Use one of the HACS methods above unles
 1. [Click Here](https://my.home-assistant.io/redirect/config_flow_start/?domain=smaev) to directly add a `SMA EV Charger` integration **or**<br/>
    a. In Home Assistant, go to Settings -> [Integrations](https://my.home-assistant.io/redirect/integrations/)<br/>
    b. Click `+ Add Integrations` and select `SMA EV Charger`<br/>
-1. Enter your SMA EV Charger network address and your credentials (as defined in the wallbox web-ui)
+1. Enter your SMA Charger's network address and your credentials (as defined in the wallbox web-ui)
 1. Change the SSL setting to your needs (e.g. if you access the wallbox through a proxy)
 1. Click `Submit`
 
