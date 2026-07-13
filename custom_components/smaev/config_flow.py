@@ -37,7 +37,9 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 )
 
 
-async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, str]:
+async def validate_input(
+    hass: HomeAssistant, data: dict[str, Any]
+) -> tuple[dict[str, str], str | None]:
     """Validate the user input allows us to connect."""
     session = async_get_clientsession(hass, verify_ssl=data[CONF_VERIFY_SSL])
 
@@ -48,8 +50,11 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     )
 
     errors: dict[str, str] = {}
+    serial: str | None = None
     try:
         await evcharger.open()
+        device_info = await evcharger.device_info()
+        serial = device_info["serial"]
     except pysmaev.exceptions.SmaEvChargerConnectionError:
         errors[CONF_BASE] = "cannot_connect"
     except pysmaev.exceptions.SmaEvChargerAuthenticationError:
@@ -59,7 +64,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         errors[CONF_BASE] = "unknown"
 
     await evcharger.close()
-    return errors
+    return errors, serial
 
 
 class SmaEvChargerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -84,9 +89,10 @@ class SmaEvChargerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_HOST: user_input[CONF_HOST],
                 }
             )
-
-            errors |= await validate_input(self.hass, user_input)
+            errors, serial = await validate_input(self.hass, user_input)
             if not errors:
+                await self.async_set_unique_id(serial)
+                self._abort_if_unique_id_configured()
                 self._config_data.update(user_input)
                 return self.async_create_entry(
                     title=user_input[CONF_HOST], data=self._config_data
@@ -110,9 +116,8 @@ class SmaEvChargerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_HOST: user_input[CONF_HOST],
                 }
             )
-
             self._reconfigure_data = user_input
-            errors |= await validate_input(self.hass, user_input)
+            errors, _ = await validate_input(self.hass, user_input)
             if not errors:
                 return self.async_update_reload_and_abort(
                     self._get_reconfigure_entry(), data=self._reconfigure_data
