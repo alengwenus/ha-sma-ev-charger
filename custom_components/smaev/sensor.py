@@ -258,7 +258,7 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        value: int | str
+        value: int | str | None = None
         if self.entity_description.type == SMAEV_MEASUREMENT:
             measurements_channel = get_measurements_channel(
                 self.coordinator.data[SMAEV_MEASUREMENT],
