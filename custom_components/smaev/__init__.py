@@ -129,9 +129,8 @@ async def async_migrate_entry(
         _async_migrate_entity_unique_ids(hass, entry, serial)
         hass.config_entries.async_update_entry(entry, unique_id=serial, minor_version=1)
         _LOGGER.debug(
-            "Migration of config entry %s to version 1.1 successful (serial: %s)",
+            "Migration of config entry %s to version 1.1 successful",
             entry.entry_id,
-            serial,
         )
 
     return True
