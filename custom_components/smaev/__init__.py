@@ -16,8 +16,9 @@ from homeassistant.const import (
     CONF_VERIFY_SSL,
     Platform,
 )
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import EntityDescription, async_generate_entity_id
@@ -53,6 +54,87 @@ class SmaEvChargerRuntimeData:
 
 
 type SmaEvChargerConfigEntry = ConfigEntry[SmaEvChargerRuntimeData]
+
+
+@callback
+def _async_migrate_entity_unique_ids(
+    hass: HomeAssistant,
+    entry: SmaEvChargerConfigEntry,
+    serial: str,
+) -> None:
+    """Migrate entity unique IDs from 'None-<key>' to '<serial>-<key>'.
+
+    Affects entries that were created before the config flow set unique_id.
+    """
+    entity_registry = er.async_get(hass)
+    for entity_entry in er.async_entries_for_config_entry(
+        entity_registry, entry.entry_id
+    ):
+        if not entity_entry.unique_id.startswith("None-"):
+            continue
+        new_unique_id = f"{serial}{entity_entry.unique_id[4:]}"
+        # Skip if target unique_id is already in use
+        if (
+            entity_registry.async_get_entity_id(
+                entity_entry.domain, entity_entry.platform, new_unique_id
+            )
+            is not None
+        ):
+            _LOGGER.warning(
+                "Cannot migrate entity %s: unique_id '%s' already taken",
+                entity_entry.entity_id,
+                new_unique_id,
+            )
+            continue
+        entity_registry.async_update_entity(
+            entity_entry.entity_id, new_unique_id=new_unique_id
+        )
+
+
+async def async_migrate_entry(
+    hass: HomeAssistant, entry: SmaEvChargerConfigEntry
+) -> bool:
+    """Migrate old config entries to the current version."""
+    _LOGGER.debug(
+        "Migrating config entry %s from version %s.%s",
+        entry.entry_id,
+        entry.version,
+        entry.minor_version,
+    )
+
+    if entry.version == 1 and entry.minor_version < 1:
+        # v1.0 → v1.1: set unique_id to device serial and migrate entity unique IDs
+        protocol = "https" if entry.data[CONF_SSL] else "http"
+        url = f"{protocol}://{entry.data[CONF_HOST]}"
+        session = async_get_clientsession(hass, verify_ssl=entry.data[CONF_VERIFY_SSL])
+        evcharger = pysmaev.core.SmaEvCharger(
+            session, url, entry.data[CONF_USERNAME], entry.data[CONF_PASSWORD]
+        )
+        try:
+            await evcharger.open()
+            device_info = await evcharger.device_info()
+        except (
+            pysmaev.exceptions.SmaEvChargerConnectionError,
+            pysmaev.exceptions.SmaEvChargerAuthenticationError,
+        ):
+            _LOGGER.exception(
+                "Migration of config entry %s failed: could not connect to device",
+                entry.entry_id,
+            )
+            return False
+        finally:
+            await evcharger.close()
+
+        serial: str = device_info["serial"]
+        _async_migrate_entity_unique_ids(hass, entry, serial)
+        hass.config_entries.async_update_entry(entry, unique_id=serial, minor_version=1)
+        _LOGGER.debug(
+            "Migration of config entry %s to version 1.1 successful (serial: %s)",
+            entry.entry_id,
+            serial,
+        )
+
+    return True
 
 
 async def async_setup_entry(

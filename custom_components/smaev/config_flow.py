@@ -71,7 +71,7 @@ class SmaEvChargerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for SMA EV Charger."""
 
     VERSION = 1
-    MINOR_VERSION = 0
+    MINOR_VERSION = 1
 
     _config_data: dict[str, str]
     _reconfigure_data: dict[str, str]
