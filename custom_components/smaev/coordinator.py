@@ -2,7 +2,7 @@
 
 import logging
 from datetime import timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL
@@ -15,10 +15,12 @@ from pysmaev.exceptions import SmaEvChargerConnectionError, SmaEvChargerExceptio
 from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
-    SMAEV_COORDINATOR,
     SMAEV_MEASUREMENT,
     SMAEV_PARAMETER,
 )
+
+if TYPE_CHECKING:
+    from . import SmaEvChargerRuntimeData
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -63,7 +65,7 @@ class SmaEvChargerCoordinator(DataUpdateCoordinator):
 def async_get_coordinator_by_device_id(
     hass: HomeAssistant, device_id: str
 ) -> SmaEvChargerCoordinator:
-    """Get the LaMetric coordinator for this device ID."""
+    """Get the SMA EV Charger coordinator for this device ID."""
     device_registry = dr.async_get(hass)
 
     if (device_entry := device_registry.async_get(device_id)) is None:
@@ -71,13 +73,9 @@ def async_get_coordinator_by_device_id(
 
     for entry_id in device_entry.config_entries:
         if (
-            (entry := hass.config_entries.async_get_entry(entry_id))
-            and entry.domain == DOMAIN
-            and entry.entry_id in hass.data[DOMAIN]
-        ):
-            coordinator: SmaEvChargerCoordinator = hass.data[DOMAIN][entry.entry_id][
-                SMAEV_COORDINATOR
-            ]
-            return coordinator
+            entry := hass.config_entries.async_get_entry(entry_id)
+        ) and entry.domain == DOMAIN:
+            runtime_data = cast(SmaEvChargerRuntimeData, entry.runtime_data)
+            return runtime_data.coordinator
 
     raise ValueError(f"No coordinator for device ID: {device_id}")

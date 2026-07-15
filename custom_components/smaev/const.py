@@ -3,7 +3,6 @@
 DOMAIN = "smaev"
 
 SMAEV_CHANNELS = "channels"
-SMAEV_COORDINATOR = "coordinator"
 SMAEV_OBJECT = "pysmaev"
 SMAEV_DEVICE_INFO = "device_info"
 
