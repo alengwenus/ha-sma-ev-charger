@@ -12,7 +12,7 @@ from homeassistant.core import HomeAssistant
 from custom_components import smaev
 from custom_components.smaev.config_flow import SmaEvChargerConfigFlow, validate_input
 
-from .conftest import CONFIG_DATA, MockConfigEntry, MockSmaEvCharger
+from .conftest import CONFIG_DATA, DEVICE_INFO, MockConfigEntry, MockSmaEvCharger
 
 
 async def test_show_form(hass: HomeAssistant) -> None:
@@ -37,6 +37,7 @@ async def test_step_user(hass):
     assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
     assert result["title"] == CONFIG_DATA[CONF_HOST]
     assert result["data"] == CONFIG_DATA
+    assert result["result"].unique_id == DEVICE_INFO["serial"]
 
 
 @patch.object(pysmaev.core, "SmaEvCharger", MockSmaEvCharger)
@@ -135,11 +136,12 @@ async def test_validate_connection(hass: HomeAssistant):
     data = CONFIG_DATA.copy()
 
     with patch("pysmaev.core.SmaEvCharger", MockSmaEvCharger) as mock:
-        result = await validate_input(hass, data=data)
+        errors, serial = await validate_input(hass, data=data)
 
     assert mock.open.is_called
     assert mock.device_info.is_called
-    assert result == {}
+    assert errors == {}
+    assert serial == DEVICE_INFO["serial"]
 
 
 @pytest.mark.parametrize(
@@ -158,6 +160,7 @@ async def test_validate_connection_raises_error(hass: HomeAssistant, error, erro
     data = CONFIG_DATA.copy()
 
     with patch("pysmaev.core.SmaEvCharger.open", side_effect=error):
-        result = await validate_input(hass, data=data)
+        result_errors, serial = await validate_input(hass, data=data)
 
-    assert result == errors
+    assert result_errors == errors
+    assert serial is None

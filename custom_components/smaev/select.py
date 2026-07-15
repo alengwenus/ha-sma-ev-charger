@@ -134,6 +134,8 @@ class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
+        if self.coordinator.data is None:
+            return
         channel = get_parameters_channel(
             self.coordinator.data[SMAEV_PARAMETER],
             self.entity_description.channel,
@@ -144,14 +146,16 @@ class SmaEvChargerSelect(CoordinatorEntity, SelectEntity):
         )
         value = str(channel[SMAEV_VALUE])
         options = [
-            self.entity_description.value_mapping[possible_value]
+            mapped
             for possible_value in possible_values
+            if (mapped := self.entity_description.value_mapping.get(possible_value))
+            is not None
         ]
         if options != self._attr_options:
             self._attr_options = options
             self.hass.async_create_task(self.force_refresh())
         else:
-            self._attr_current_option = self.entity_description.value_mapping[value]
+            self._attr_current_option = self.entity_description.value_mapping.get(value)
         super()._handle_coordinator_update()
 
     async def force_refresh(self) -> None:

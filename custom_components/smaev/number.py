@@ -164,6 +164,8 @@ class SmaEvChargerNumber(CoordinatorEntity, NumberEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
+        if self.coordinator.data is None:
+            return
         channel = get_parameters_channel(
             self.coordinator.data[SMAEV_PARAMETER],
             self.entity_description.channel,

@@ -79,6 +79,21 @@ def create_entry():
     return entry
 
 
+@pytest.fixture(name="entry1_0")
+def entry1_0():
+    """Return mock entry with version 1.0 (no unique_id, minor_version=0)."""
+    entry = MockConfigEntry(
+        domain=smaev.DOMAIN,
+        title=CONFIG_DATA[CONF_HOST],
+        unique_id=None,
+        version=1,
+        minor_version=0,
+        data=CONFIG_DATA,
+        options={},
+    )
+    return entry
+
+
 @pytest.fixture(name="evcharger")
 async def init_integration(hass, entry):
     """Set up the EV Charger integration in Home Assistant."""
