@@ -179,6 +179,9 @@
       },
       "full_charge_disconnect": {
         "name": "Disconnection after full charge"
+      },
+      "lock_charging_cable": {
+        "name": "Lock the charging cable to the charging station"
       }
     }
   }
