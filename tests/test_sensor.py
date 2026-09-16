@@ -1,7 +1,9 @@
 """Test for the SMA EV Charger sensor platform."""
 
+import logging
 from datetime import timedelta
 
+import pytest
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_UNIT_OF_MEASUREMENT,
@@ -14,8 +16,12 @@ from homeassistant.util.dt import utcnow
 from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
 from custom_components.smaev import generate_smaev_entity_id
-from custom_components.smaev.const import DEFAULT_SCAN_INTERVAL
-from custom_components.smaev.sensor import ENTITY_ID_FORMAT, SENSOR_DESCRIPTIONS
+from custom_components.smaev.const import DEFAULT_SCAN_INTERVAL, SMAEV_MEASUREMENT
+from custom_components.smaev.sensor import (
+    ENTITY_ID_FORMAT,
+    SENSOR_DESCRIPTIONS,
+    async_setup_entry,
+)
 
 
 def get_entity_ids_and_descriptions(hass, entry) -> tuple:
@@ -81,3 +87,61 @@ async def test_unload_config_entry(hass: HomeAssistant, entry, evcharger) -> Non
 
     for entity_id, _ in items:
         assert hass.states.get(entity_id).state == STATE_UNAVAILABLE
+
+
+@pytest.mark.parametrize(
+    ("missing_channel", "missing_key", "expected_level"),
+    [
+        ("Measurement.GridMs.Hz", "grid_frequency", logging.DEBUG),
+        (
+            "Measurement.Metering.GridMs.TotWIn.ChaSta",
+            "charging_station_power",
+            logging.WARNING,
+        ),
+        (None, None, None),
+    ],
+)
+async def test_optional_channel_logging(
+    hass: HomeAssistant,
+    entry,
+    evcharger,
+    caplog: pytest.LogCaptureFixture,
+    missing_channel,
+    missing_key,
+    expected_level,
+) -> None:
+    """Only an explicitly optional missing channel is logged at DEBUG."""
+    if missing_channel is not None:
+        entry.runtime_data.channels[SMAEV_MEASUREMENT].remove(missing_channel)
+
+    caplog.clear()
+    entities = []
+    with caplog.at_level(logging.DEBUG, logger="custom_components.smaev.sensor"):
+        await async_setup_entry(hass, entry, entities.extend)
+
+    assert {entity.entity_description.key for entity in entities} == {
+        description.key
+        for description in SENSOR_DESCRIPTIONS
+        if description.key != missing_key
+    }
+    records = [
+        record
+        for record in caplog.records
+        if record.name == "custom_components.smaev.sensor"
+    ]
+    if missing_channel is None:
+        assert not records
+    else:
+        assert len(records) == 1
+        assert records[0].levelno == expected_level
+        assert missing_channel in records[0].getMessage()
+        if expected_level == logging.DEBUG:
+            assert "Elevated rights" not in records[0].getMessage()
+
+    if missing_key != "grid_frequency":
+        frequency = next(
+            entity
+            for entity in entities
+            if entity.entity_description.key == "grid_frequency"
+        )
+        assert not frequency.entity_description.entity_registry_enabled_default
