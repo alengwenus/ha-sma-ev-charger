@@ -560,6 +560,17 @@
                     "Wifi2",
                     "Wifi3"
                 ]
+            },
+            {
+                "channelId": "Parameter.Chrg.CblLok",
+                "editable": true,
+                "possibleValues": [
+                    "303",
+                    "308"
+                ],
+                "state": "Confirmed",
+                "timestamp": "2025-08-23T08:45:00.000Z",
+                "value": "303"
             }
         ]
     }
