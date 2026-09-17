@@ -47,6 +47,7 @@ class SmaEvChargerSensorEntityDescription(SensorEntityDescription):
 
     type: str = ""
     channel: str = ""
+    channel_optional: bool = False
     value_mapping: dict[int | str, str] = field(default_factory=dict)
 
 
@@ -105,6 +106,7 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
         translation_key="grid_frequency",
         type=SMAEV_MEASUREMENT,
         channel="Measurement.GridMs.Hz",
+        channel_optional=True,
         native_unit_of_measurement=UnitOfFrequency.HERTZ,
         state_class=SensorStateClass.MEASUREMENT,
         device_class=SensorDeviceClass.FREQUENCY,
@@ -219,6 +221,11 @@ async def async_setup_entry(
         if entity_description.channel in channels[entity_description.type]:
             entities.append(
                 SmaEvChargerSensor(hass, config_entry, device_info, entity_description)
+            )
+        elif entity_description.channel_optional:
+            _LOGGER.debug(
+                "Optional channel '%s' is not available for this device/account; skipping sensor.",
+                entity_description.channel,
             )
         else:
             _LOGGER.warning(
