@@ -923,7 +923,7 @@ wheels = [
 
 [[package]]
 name = "ha-sma-ev-charger"
-version = "0.1.0"
+version = "1.4.1"
 source = { virtual = "." }
 dependencies = [
     { name = "mypy" },
