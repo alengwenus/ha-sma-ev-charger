@@ -1,5 +1,6 @@
 """Test for the SMA EV Charger sensor platform."""
 
+import copy
 import logging
 from datetime import timedelta
 
@@ -13,15 +14,22 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 from homeassistant.util.dt import utcnow
+from pysmaev.helpers import get_measurements_channel
 from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
 from custom_components.smaev import generate_smaev_entity_id
-from custom_components.smaev.const import DEFAULT_SCAN_INTERVAL, SMAEV_MEASUREMENT
+from custom_components.smaev.const import (
+    DEFAULT_SCAN_INTERVAL,
+    SMAEV_MEASUREMENT,
+    SMAEV_VALUE,
+)
 from custom_components.smaev.sensor import (
     ENTITY_ID_FORMAT,
     SENSOR_DESCRIPTIONS,
     async_setup_entry,
 )
+
+from .conftest import MEASUREMENTS
 
 
 def get_entity_ids_and_descriptions(hass, entry) -> tuple:
@@ -145,3 +153,37 @@ async def test_optional_channel_logging(
             if entity.entity_description.key == "grid_frequency"
         )
         assert not frequency.entity_description.entity_registry_enabled_default
+
+
+async def test_session_energy_mirroring_the_meter_is_unknown(
+    hass: HomeAssistant, entry, evcharger
+) -> None:
+    """A session value equal to the meter reading is reported as unknown (#41)."""
+    measurements = copy.deepcopy(MEASUREMENTS)
+    meter = get_measurements_channel(
+        measurements, "Measurement.Metering.GridMs.TotWhIn.ChaSta"
+    )[0][SMAEV_VALUE]
+    get_measurements_channel(measurements, "Measurement.ChaSess.WhIn")[0][
+        SMAEV_VALUE
+    ] = meter
+    evcharger.request_measurements.return_value = measurements
+
+    async_fire_time_changed(
+        hass, utcnow() + timedelta(seconds=DEFAULT_SCAN_INTERVAL + 1)
+    )
+    await hass.async_block_till_done()
+
+    description = next(
+        d for d in SENSOR_DESCRIPTIONS if d.key == "charging_session_energy"
+    )
+    entity_id = generate_smaev_entity_id(
+        hass, entry, ENTITY_ID_FORMAT, description, suffix=False
+    )
+    assert hass.states.get(entity_id).state == STATE_UNKNOWN
+    meter_description = next(
+        d for d in SENSOR_DESCRIPTIONS if d.key == "charging_station_meter_reading"
+    )
+    meter_id = generate_smaev_entity_id(
+        hass, entry, ENTITY_ID_FORMAT, meter_description, suffix=False
+    )
+    assert hass.states.get(meter_id).state == str(meter)
