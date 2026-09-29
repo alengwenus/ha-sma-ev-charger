@@ -48,6 +48,11 @@ class SmaEvChargerSensorEntityDescription(SensorEntityDescription):
     type: str = ""
     channel: str = ""
     channel_optional: bool = False
+    # A measurement channel whose value this one must never equal. After a power
+    # cycle some wallbox firmware reports the meter reading in the charging-session
+    # channel until the next car connection (#41); such a reading is not a session
+    # value, so it is reported as unknown instead.
+    invalid_if_equal_to: str = ""
     value_mapping: dict[int | str, str] = field(default_factory=dict)
 
 
@@ -57,6 +62,7 @@ SENSOR_DESCRIPTIONS: tuple[SmaEvChargerSensorEntityDescription, ...] = (
         translation_key="charging_session_energy",
         type=SMAEV_MEASUREMENT,
         channel="Measurement.ChaSess.WhIn",
+        invalid_if_equal_to="Measurement.Metering.GridMs.TotWhIn.ChaSta",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
         device_class=SensorDeviceClass.ENERGY,
@@ -262,6 +268,19 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
         self._attr_unique_id = f"{config_entry.unique_id}-{self.entity_description.key}"
         self._unknown_value_reported: int | str | None = None
 
+    def _mirrors_invalid_channel(self, value: int) -> bool:
+        """Return True if the value equals the channel it must never equal."""
+        other = self.entity_description.invalid_if_equal_to
+        if not other:
+            return False
+        try:
+            other_channel = get_measurements_channel(
+                self.coordinator.data[SMAEV_MEASUREMENT], other
+            )
+        except KeyError:
+            return False
+        return value == int(other_channel[0][SMAEV_VALUE])
+
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
@@ -272,6 +291,8 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
                 self.entity_description.channel,
             )
             value = int(measurements_channel[0][SMAEV_VALUE])
+            if self._mirrors_invalid_channel(value):
+                value = None
         else:  # SMAEV_PARAMETER
             parameters_channel = get_parameters_channel(
                 self.coordinator.data[SMAEV_PARAMETER],
@@ -279,7 +300,8 @@ class SmaEvChargerSensor(CoordinatorEntity, SensorEntity):
             )
             value = str(parameters_channel[SMAEV_VALUE])
 
-        value = self.entity_description.value_mapping.get(value) or value
+        if value is not None:
+            value = self.entity_description.value_mapping.get(value) or value
 
         if (
             self.entity_description.device_class == SensorDeviceClass.ENUM
